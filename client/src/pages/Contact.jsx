@@ -7,17 +7,24 @@ const offices = [
   {
     title: "Toronto, Canada",
     flag: "https://flagcdn.com/w40/ca.png",
-    addr: "205 – 1085 Bellamy Road North\nToronto, ON M1H 3C7",
-    phone: ["647-722-0837"],
-    email: "info@venushiring.ca",
+    flagWrapperClass: "office-flag-wrapper--canada",
+    address: "#205 - 1085 Bellamy Road North, Toronto, ON",
+    phones: ["647-722-0837"]
   },
   {
     title: "Michigan, USA",
     flag: "https://flagcdn.com/w40/us.png",
-    addr: "225 – 880 W Long Lake Road\nTroy, MI 48098",
-    phone: ["248-275-1077", "718-715-0770"],
-    email: "info@venushiring.com",
+    flagWrapperClass: "office-flag-wrapper--usa",
+    address: "880 W Long Lake Rd Ste 225 | Troy, MI 48098",
+    phones: ["248-275-1077", "718-715-0770"]
   },
+  {
+    title: "India",
+    flag: "https://flagcdn.com/w40/in.png",
+    flagWrapperClass: "office-flag-wrapper--india",
+    address: "Mumbai, Surat, Chennai, Hyderabad",
+    phones: ["+91-261-2601177", "+91-261-391177"]
+  }
 ];
 
 const Contact = () => {
@@ -143,7 +150,7 @@ const Contact = () => {
               </div>
               <div className="contact-meta">
                 <div className="meta-label">Email</div>
-                <div className="meta-value">info@venushiring.com</div>
+                <div className="meta-value">info@venushiring.ca</div>
               </div>
             </div>
 
@@ -266,44 +273,40 @@ const Contact = () => {
       <section className="offices-section container">
         <h3 className="offices-title">Our Office Locations</h3>
         <p className="offices-sub">
-          Combined with our role as trusted advisors for professionals translates into our core capability — Building careers. Building Organisations.
+          Connect with us across multiple locations worldwide
         </p>
 
         <div className="offices-grid">
-          {offices.map((o) => (
-            <article key={o.title} className="office-card" aria-labelledby={o.title}>
-              <h4 className="office-title">
-                <img 
-                  src={o.flag} 
-                  alt={`${o.title} flag`} 
-                  className="office-flag"
-                  style={{
-                    width: '24px',
-                    height: '18px',
-                    marginRight: '8px',
-                    borderRadius: '2px',
-                    display: 'inline-block',
-                    verticalAlign: 'middle'
-                  }}
-                />
-                {o.title}
-              </h4>
-              <div className="office-addr">
-                {o.addr.split("\n").map((line, idx) => (
-                  <div key={idx}>{line}</div>
-                ))}
+          {offices.map((office, index) => (
+            <article key={index} className="office-card" aria-labelledby={office.title}>
+              <div className="office-header">
+                <div className={`office-flag-wrapper ${office.flagWrapperClass}`}>
+                  <img 
+                    src={office.flag} 
+                    alt={`${office.title} flag`}
+                    className="office-flag"
+                  />
+                </div>
+                <h4 className="office-title">{office.title}</h4>
               </div>
-
-              <hr className="office-sep" />
-
-              <div className="office-contact">
-                <div><strong>Contact</strong></div>
-                {o.phone.map((ph, idx) => (
-                  <div key={idx}>Ph: {ph}</div>
+              
+              <div className="office-details">
+                <div className="office-detail-item">
+                  <svg className="office-icon office-icon--green" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                  </svg>
+                  <span className="office-address">{office.address}</span>
+                </div>
+                
+                {office.phones.map((phone, idx) => (
+                  <div key={idx} className="office-detail-item">
+                    <svg className="office-icon office-icon--green" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.86 19.86 0 0 1 3.08 5.18 2 2 0 0 1 5 3h3a2 2 0 0 1 2 1.72c.12.81.3 1.61.54 2.39a2 2 0 0 1-.45 2.11L9.1 10.9a16 16 0 0 0 6 6l1.68-1.01a2 2 0 0 1 2.11-.45c.78.24 1.58.42 2.39.54A2 2 0 0 1 22 16.92z"></path>
+                    </svg>
+                    <a href={`tel:${phone.replace(/\s/g, '')}`} className="office-phone">{phone}</a>
+                  </div>
                 ))}
-                {o.email && (
-                  <div>Email: <a href={`mailto:${o.email}`} style={{ color: 'inherit' }}>{o.email}</a></div>
-                )}
               </div>
             </article>
           ))}
