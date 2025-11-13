@@ -14,7 +14,7 @@ const AboutUs = () => {
             About Venus Hiring
           </h1>
           <p className="about-hero__sub">
-            We connect ambitious teams across Canada and beyond with the right talent to build the future—faster and with confidence.
+            As a trusted Canadian recruitment partner, we connect ambitious teams across Canada—from Toronto to Vancouver, Montreal to Calgary—with the right talent to build the future. Our deep understanding of the Canadian market helps businesses thrive from coast to coast.
           </p>
           <div className="hero-image-trail">
             <ImageTrail
@@ -64,7 +64,7 @@ const AboutUs = () => {
               <div className="bp-card__content">
                 <h3 className="bp-card__title">FOR EMPLOYEES</h3>
                 <p className="bp-card__text">
-                  Discover opportunities across technology, healthcare, finance and more. Create your profile and apply to roles that match your skills and goals.
+                  Discover opportunities across Canada in technology, healthcare, finance and more. Create your profile and apply to roles that match your skills and goals at leading Canadian companies.
                 </p>
                 <a href="/find-jobs" className="bp-card__link" aria-label="Browse open roles">Find jobs</a>
               </div>
@@ -76,7 +76,7 @@ const AboutUs = () => {
               <div className="bp-card__content">
                 <h3 className="bp-card__title">FOR EMPLOYERS</h3>
                 <p className="bp-card__text">
-                  We help you find talent who don't just fill a role—they make an impact. Receive tailored shortlists fast and hire confidently with our dedicated support.
+                  We help Canadian businesses find talent who don't just fill a role—they make an impact. Receive tailored shortlists fast and hire confidently with our dedicated support, backed by deep knowledge of the Canadian job market.
                 </p>
                 <a href="/contact" className="bp-card__link" aria-label="Hire talent with Venus Hiring">Hire talent</a>
               </div>

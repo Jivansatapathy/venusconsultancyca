@@ -146,7 +146,7 @@ export default function StatAbout() {
 
           {/* Description */}
           <p className="stat-about__description">
-            At Venus Consultancy, we understand that the key to business success lies in having the right people on your team. That's why we're committed to connecting Canadian companies with top-tier talent across North America and beyond.
+            At Venus Consultancy, we understand that the key to business success lies in having the right people on your team. As a leading Canadian recruitment firm based in Toronto, we're committed to connecting Canadian companies with exceptional talent across Canada. Our deep understanding of the Canadian job market, from Vancouver to Halifax, enables us to find the perfect match for businesses nationwide.
           </p>
 
           {/* Stats */}

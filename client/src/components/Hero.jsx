@@ -22,7 +22,7 @@ export default function Hero({ showImage = false, imageSrc = "/hero-person.webp"
 
         {/* Description */}
         <p className="hero-description">
-          Connect with top-tier talent and discover professionals who drive growth, innovation, and success.
+          Connect with top-tier Canadian talent and discover professionals who drive growth, innovation, and success for businesses across Canada.
         </p>
 
         {/* Buttons */}

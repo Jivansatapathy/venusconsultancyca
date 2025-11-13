@@ -7,6 +7,7 @@ import "./Services.css";
 
 // Lazy load ServicesSection
 const ServicesSection = lazy(() => import("../components/ServicesSection"));
+const FAQ = lazy(() => import("../components/FAQ"));
 
 const Services = () => {
   const navigate = useNavigate();
@@ -662,13 +663,18 @@ const Services = () => {
                 Connect with your next talent on Venus
               </h2>
               <p className="cta-description">
-                Get in front of thousands of companies actively hiring through the leading global talent marketplace.
+                Get in front of thousands of Canadian companies actively hiring through Canada's leading talent marketplace.
               </p>
               <button className="cta-button" type="button" onClick={handleCreateJobListing}>Create a Job Listing</button>
             </div>
           </div>
         </div>
       </section>
+
+      {/* FAQ Section */}
+      <Suspense fallback={<div style={{ padding: '3rem 0', textAlign: 'center' }}>Loading...</div>}>
+        <FAQ />
+      </Suspense>
 
       {/* Review Modal */}
       {showReviewModal && (

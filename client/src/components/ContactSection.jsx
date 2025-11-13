@@ -34,7 +34,7 @@ const ContactSection = () => {
     <section className="contact-section" aria-label="Contact information">
       <div className="contact-container">
         <h3 className="contact-title">Our Office Locations</h3>
-        <p className="contact-subtitle">Connect with us across multiple locations worldwide</p>
+        <p className="contact-subtitle">Connect with us across Canada and beyond—serving businesses from coast to coast</p>
         
         <div className="offices-grid">
           {offices.map((office, index) => (

@@ -20,9 +20,9 @@ const WhyStats = () => {
       description: 'We take responsibility for placing candidates with strong social, ethical, and professional skills, ensuring they are fully prepared for interviews and workplace success.'
     },
     {
-      title: 'Global Reach',
-      summary: 'Worldwide talent, local expertise',
-      description: 'We connect talent with opportunities worldwide, supporting professionals from diverse backgrounds and helping employers access the best talent, anywhere.'
+      title: 'Canadian Market Expertise',
+      summary: 'Deep local knowledge, nationwide reach',
+      description: 'With our headquarters in Toronto and deep roots across Canada, we understand the unique dynamics of the Canadian job market. We connect Canadian talent with opportunities from coast to coast, supporting professionals across all provinces and helping employers access the best talent throughout Canada.'
     }
   ];
 

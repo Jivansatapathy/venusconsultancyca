@@ -3,7 +3,7 @@
 const testimonials = {
   heading: "What our partners say",
   subheading:
-    "Venus Hiring has helped companies and candidates connect faster and smarter. Here's what our clients and talent say about working with us.",
+    "Venus Hiring has helped Canadian companies and candidates connect faster and smarter. Here's what our clients and talent across Canada say about working with us.",
   items: [
     {
       quote:

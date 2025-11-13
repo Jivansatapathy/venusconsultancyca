@@ -9,6 +9,7 @@ const WhyStats = lazy(() => import("../components/WhyStats"));
 const TalentSection = lazy(() => import("../components/TalentSection"));
 const ServicesSection = lazy(() => import("../components/ServicesSection"));
 const BlogSection = lazy(() => import("../components/BlogSection"));
+const FAQ = lazy(() => import("../components/FAQ"));
 
 // Loading fallback for lazy components
 const LazyFallback = () => (
@@ -42,6 +43,9 @@ export default function Home() {
       </Suspense>
       <Suspense fallback={<LazyFallback />}>
         <BlogSection/>
+      </Suspense>
+      <Suspense fallback={<LazyFallback />}>
+        <FAQ />
       </Suspense>
     </>
   );
