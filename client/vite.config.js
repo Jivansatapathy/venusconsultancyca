@@ -26,9 +26,9 @@ export default defineConfig(({ mode }) => {
       cors: true,
       proxy: {
         '/api': {
-          target: 'http://localhost:5000',
+          target: 'https://venus-backend-canada-841304788329.us-central1.run.app',
           changeOrigin: true,
-          secure: false
+          secure: true
         }
       }
     },

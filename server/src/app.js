@@ -22,6 +22,8 @@ import contactRoutes from "./routes/contactRoutes.js";
 import chatRoutes from "./routes/chatRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
 import healthRoutes from "./routes/healthRoutes.js";
+import seoRoutes from "./routes/seoRoutes.js";
+import blogRoutes from "./routes/blogRoutes.js";
 import connectDB from "./config/db.js";
 
 const app = express();
@@ -122,6 +124,8 @@ app.use("/api/contact", contactRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/health", healthRoutes);
+app.use("/api/seo", seoRoutes);
+app.use("/api/blogs", blogRoutes);
 
 // ---- Serve Frontend (guarded) ----
 import fs from "fs";
@@ -166,9 +170,12 @@ process.on("unhandledRejection", (reason, promise) => {
 });
 
 // ---- Start server ----
-const PORT = config.PORT;
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+// Cloud Run sets PORT environment variable, fallback to config.PORT
+const PORT = process.env.PORT || config.PORT || 8080;
+const HOST = process.env.HOST || '0.0.0.0';
+
+app.listen(PORT, HOST, () => {
+  console.log(`🚀 Server running on ${HOST}:${PORT}`);
   console.log(`NODE_ENV=${config.NODE_ENV}`);
   console.log(`CLIENT_ORIGIN=${config.CLIENT_ORIGIN}`);
   console.log(`CORS_ALLOWED_ORIGINS=${config.CORS_ALLOWED_ORIGINS.join(", ")}`);

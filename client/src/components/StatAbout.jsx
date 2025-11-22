@@ -2,10 +2,23 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import "./StatAbout.css";
 
-export default function StatAbout() {
+export default function StatAbout({ content }) {
   const sectionRef = useRef(null);
   const [inView, setInView] = useState(false);
   const [counts, setCounts] = useState({ clients: 0, satisfaction: 0, success: 0 });
+
+  // Use content from database or fallback to defaults
+  const tag = content?.aboutTag || 'ABOUT VENUS HIRING';
+  const title = content?.aboutTitle || 'Driving Success With An Expert Staffing';
+  const description = content?.aboutDescription || 'At Venus Consultancy, we understand that the key to business success lies in having the right people on your team. As a leading Canadian recruitment firm based in Toronto, we\'re committed to connecting Canadian companies with exceptional talent across Canada. Our deep understanding of the Canadian job market, from Vancouver to Halifax, enables us to find the perfect match for businesses nationwide.';
+  const statClients = content?.aboutStatClients || 77;
+  const statSatisfaction = content?.aboutStatSatisfaction || 98;
+  const statSuccess = content?.aboutStatSuccess || 99;
+  const statClientsLabel = content?.aboutStatClientsLabel || 'Trusted Partnerships';
+  const statSatisfactionLabel = content?.aboutStatSatisfactionLabel || 'Client Satisfaction';
+  const statSuccessLabel = content?.aboutStatSuccessLabel || 'Success Rate';
+  const ctaText = content?.aboutCtaText || 'JOIN OUR NETWORK';
+  const ctaLink = content?.aboutCtaLink || '/book-call';
 
   // IntersectionObserver to detect when section comes into view
   useEffect(() => {
@@ -35,9 +48,9 @@ export default function StatAbout() {
     const startTime = performance.now();
     
     const targets = {
-      clients: 77, // 77+
-      satisfaction: 98, // 98%
-      success: 99 // 99%
+      clients: statClients,
+      satisfaction: statSatisfaction,
+      success: statSuccess
     };
 
     // Ease out cubic function
@@ -136,17 +149,17 @@ export default function StatAbout() {
           {/* Tag */}
           <div className="stat-about__tag">
             <span className="stat-about__tag-icon">🏢</span>
-            <span>ABOUT VENUS HIRING</span>
+            <span>{tag}</span>
           </div>
 
           {/* Title */}
           <h2 className="stat-about__title">
-            Driving Success With An Expert Staffing
+            {title}
           </h2>
 
           {/* Description */}
           <p className="stat-about__description">
-            At Venus Consultancy, we understand that the key to business success lies in having the right people on your team. As a leading Canadian recruitment firm based in Toronto, we're committed to connecting Canadian companies with exceptional talent across Canada. Our deep understanding of the Canadian job market, from Vancouver to Halifax, enables us to find the perfect match for businesses nationwide.
+            {description}
           </p>
 
           {/* Stats */}
@@ -155,25 +168,25 @@ export default function StatAbout() {
               <div className="stat-about__stat-number">
                 {formatStat(counts.clients, 'K+')}
               </div>
-              <div className="stat-about__stat-label">Trusted Partnerships</div>
+              <div className="stat-about__stat-label">{statClientsLabel}</div>
             </div>
             <div className="stat-about__stat">
               <div className="stat-about__stat-number">
                 {formatStat(counts.satisfaction, '%')}
               </div>
-              <div className="stat-about__stat-label">Client Satisfaction</div>
+              <div className="stat-about__stat-label">{statSatisfactionLabel}</div>
             </div>
             <div className="stat-about__stat">
               <div className="stat-about__stat-number">
                 {formatStat(counts.success, '%')}
               </div>
-              <div className="stat-about__stat-label">Success Rate</div>
+              <div className="stat-about__stat-label">{statSuccessLabel}</div>
             </div>
           </div>
 
           {/* CTA Button */}
-          <Link to="/book-call" className="stat-about__cta">
-            JOIN OUR NETWORK
+          <Link to={ctaLink} className="stat-about__cta">
+            {ctaText}
           </Link>
         </div>
       </div>

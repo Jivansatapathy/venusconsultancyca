@@ -8,8 +8,7 @@ const router = express.Router();
 // ➕ Create candidate — ADMIN only
 router.post("/", requireAuth, requireRole("admin"), async (req, res) => {
   try {
-    const candidate = new Candidate(req.body);
-    await candidate.save();
+    const candidate = await Candidate.create(req.body);
     res.status(201).json(candidate);
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -41,18 +40,13 @@ router.get("/", requireAuth, requireRole("admin", "recruiter"), async (req, res)
     const filters = {};
 
     if (q && q.trim()) {
-      const safeQ = q.trim();
-      filters.$or = [
-        { name: { $regex: safeQ, $options: "i" } },
-        { title: { $regex: safeQ, $options: "i" } },
-        { summary: { $regex: safeQ, $options: "i" } },
-      ];
+      filters.search = q.trim();
     }
 
     if (location && location.trim()) {
       const loc = location.trim();
       if (/remote/i.test(loc)) filters.remote = true;
-      else filters.location = { $regex: loc, $options: "i" };
+      else filters.location = loc;
     } else if (remote === "remote") filters.remote = true;
     else if (remote === "onsite") filters.remote = false;
 
@@ -61,12 +55,14 @@ router.get("/", requireAuth, requireRole("admin", "recruiter"), async (req, res)
         .split(",")
         .map((s) => s.trim())
         .filter(Boolean);
-      if (skillList.length) filters.skills = { $all: skillList };
+      if (skillList.length) filters.skills = skillList;
     }
 
+    // Experience filtering will be done in-memory
     const minExp = Number(expMin) || 0;
     const maxExp = Number(expMax) || 100;
-    filters.experience = { $gte: minExp, $lte: maxExp };
+    filters.experienceMin = minExp;
+    filters.experienceMax = maxExp;
 
     let sortObj = {};
     if (sort === "latest") sortObj = { createdAt: -1 };
@@ -74,14 +70,41 @@ router.get("/", requireAuth, requireRole("admin", "recruiter"), async (req, res)
     else if (sort === "exp-asc") sortObj = { experience: 1 };
     else sortObj = { createdAt: -1 };
 
-    const total = await Candidate.countDocuments(filters);
-
-    const candidates = await Candidate.find(filters)
-      .sort(sortObj)
-      .skip((pageNum - 1) * pageLimit)
-      .limit(pageLimit)
-      .populate("appliedJob")
-      .select("-ssn -personalEmail");
+    let allCandidates = await Candidate.find(filters);
+    
+    // Apply experience filter in-memory
+    if (filters.experienceMin !== undefined || filters.experienceMax !== undefined) {
+      allCandidates = allCandidates.filter(c => {
+        const exp = c.experience || 0;
+        return exp >= filters.experienceMin && exp <= filters.experienceMax;
+      });
+    }
+    
+    const total = allCandidates.length;
+    
+    // Sort candidates
+    allCandidates.sort((a, b) => {
+      if (sort === "latest") {
+        const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt);
+        const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt);
+        return dateB - dateA;
+      } else if (sort === "exp-desc") {
+        return (b.experience || 0) - (a.experience || 0);
+      } else if (sort === "exp-asc") {
+        return (a.experience || 0) - (b.experience || 0);
+      }
+      return 0;
+    });
+    
+    // Apply pagination
+    const skip = (pageNum - 1) * pageLimit;
+    let candidates = allCandidates.slice(skip, skip + pageLimit);
+    
+    // Remove sensitive fields
+    candidates = candidates.map(c => {
+      const { personalEmail, ...rest } = c;
+      return rest;
+    });
 
     const pages = Math.max(1, Math.ceil(total / pageLimit));
 

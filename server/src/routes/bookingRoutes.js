@@ -50,7 +50,7 @@ router.post('/', async (req, res) => {
     }
 
     // Create new booking
-    const booking = new Booking({
+    const booking = await Booking.create({
       name,
       email,
       phone,
@@ -63,13 +63,11 @@ router.post('/', async (req, res) => {
       status: 'pending'
     });
 
-    await booking.save();
-
     res.status(201).json({
       success: true,
       message: 'Booking request submitted successfully',
       data: {
-        id: booking._id,
+        id: booking.id,
         name: booking.name,
         email: booking.email,
         preferredDate: booking.preferredDate,
@@ -110,13 +108,20 @@ router.get('/', requireAuth, async (req, res) => {
     const sort = {};
     sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
 
-    const bookings = await Booking.find(filter)
-      .sort(sort)
-      .limit(limit * 1)
-      .skip((page - 1) * limit)
-      .select('-__v');
-
-    const total = await Booking.countDocuments(filter);
+    const allBookings = await Booking.find(filter);
+    const total = allBookings.length;
+    
+    // Sort bookings
+    allBookings.sort((a, b) => {
+      const aVal = a[sortBy];
+      const bVal = b[sortBy];
+      const aDate = aVal?.toDate ? aVal.toDate() : (aVal instanceof Date ? aVal : new Date(aVal));
+      const bDate = bVal?.toDate ? bVal.toDate() : (bVal instanceof Date ? bVal : new Date(bVal));
+      return sortOrder === 'desc' ? bDate - aDate : aDate - bDate;
+    });
+    
+    const skip = (page - 1) * limit;
+    const bookings = allBookings.slice(skip, skip + parseInt(limit));
 
     res.json({
       success: true,
@@ -191,11 +196,7 @@ router.patch('/:id/status', requireAuth, async (req, res) => {
     if (adminNotes !== undefined) updateData.adminNotes = adminNotes;
     if (confirmedDateTime) updateData.confirmedDateTime = new Date(confirmedDateTime);
 
-    const booking = await Booking.findByIdAndUpdate(
-      req.params.id,
-      updateData,
-      { new: true, runValidators: true }
-    );
+    const booking = await Booking.update(req.params.id, updateData);
 
     if (!booking) {
       return res.status(404).json({
@@ -230,7 +231,7 @@ router.delete('/:id', requireAuth, async (req, res) => {
       });
     }
 
-    const booking = await Booking.findByIdAndDelete(req.params.id);
+    const booking = await Booking.findById(req.params.id);
 
     if (!booking) {
       return res.status(404).json({
@@ -238,6 +239,8 @@ router.delete('/:id', requireAuth, async (req, res) => {
         message: 'Booking not found'
       });
     }
+
+    await Booking.delete(req.params.id);
 
     res.json({
       success: true,

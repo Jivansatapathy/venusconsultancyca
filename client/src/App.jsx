@@ -26,6 +26,8 @@ const BookCall = lazy(() => import("./pages/BookCall"));
 const Hiring = lazy(() => import("./pages/Hiring"));
 const JobRoles = lazy(() => import("./pages/JobRoles"));
 const ServiceCategory = lazy(() => import("./pages/ServiceCategory"));
+const BlogDetail = lazy(() => import("./pages/BlogDetail"));
+const Blogs = lazy(() => import("./pages/Blogs"));
 
 // Loading fallback component
 const LoadingFallback = () => (
@@ -117,6 +119,16 @@ function AppContent() {
         <Route path="/contact" element={
           <Suspense fallback={<LoadingFallback />}>
             <Contact />
+          </Suspense>
+        } />
+        <Route path="/blogs" element={
+          <Suspense fallback={<LoadingFallback />}>
+            <Blogs />
+          </Suspense>
+        } />
+        <Route path="/blog/:slug" element={
+          <Suspense fallback={<LoadingFallback />}>
+            <BlogDetail />
           </Suspense>
         } />
 

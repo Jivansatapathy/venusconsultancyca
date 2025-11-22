@@ -41,37 +41,13 @@ function processQueue(err, token = null) {
   refreshQueue = [];
 }
 
-// Resolve runtime API base from environment (cover Vite and NEXT_PUBLIC usage)
-const RUNTIME_API =
-  (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.VITE_API_URL) ||
-  (typeof process !== "undefined" && process.env && process.env.NEXT_PUBLIC_API_URL) ||
-  (typeof process !== "undefined" && process.env.NODE_ENV === 'development' ? "http://localhost:5000" : null);
+// Backend API URL - Cloud Run deployment
+const getApiUrl = () => {
+  // Use Cloud Run backend URL
+  return "https://venus-backend-canada-841304788329.us-central1.run.app";
+};
 
-// Provide fallback for production if VITE_API_URL is not set
-let API_URL = RUNTIME_API;
-if (!API_URL) {
-  // Try to detect if we're in production and provide a reasonable fallback
-  const isProduction = typeof process !== "undefined" && process.env.NODE_ENV === 'production';
-  if (isProduction) {
-    // Common production API URLs - you can customize these
-    const possibleUrls = [
-      'https://venusconsultancy.onrender.com',
-      'https://venus-hiring-api.herokuapp.com',
-      'https://api.venushiring.com'
-    ];
-    
-    // Use the first available URL or show a helpful error
-    API_URL = possibleUrls[0];
-    
-    console.warn(
-      'VITE_API_URL not set in production. Using fallback:', API_URL,
-      '\nTo fix this permanently, set VITE_API_URL environment variable to your production API domain.'
-    );
-  } else {
-    // Development fallback
-    API_URL = "http://localhost:5000";
-  }
-}
+const API_URL = getApiUrl();
 
 // Ensure baseURL ends without trailing slash and points to /api
 const API_BASE = API_URL.replace(/\/$/, "") + "/api";

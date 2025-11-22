@@ -14,7 +14,6 @@ dotenv.config({ path: path.join(rootDir, ".env") });
 const requiredEnvVars = [
   "ACCESS_SECRET",
   "REFRESH_SECRET", 
-  "MONGO_URI",
   "PORT"
 ];
 
@@ -39,8 +38,7 @@ export const config = {
   ACCESS_SECRET: process.env.ACCESS_SECRET,
   REFRESH_SECRET: process.env.REFRESH_SECRET,
   
-  // Database
-  MONGO_URI: process.env.MONGO_URI,
+  // Database (Firestore - configured via Firebase service account)
   
   // Server
   PORT: process.env.PORT || 5000,

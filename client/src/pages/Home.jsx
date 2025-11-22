@@ -1,7 +1,8 @@
-import React, { Suspense, lazy } from "react";
+import React, { Suspense, lazy, useState, useEffect } from "react";
 import Hero from "../components/ThirdHero";
 import ScrollingBanner from "../components/ScrollingBanner";
 import StatAbout from "../components/StatAbout";
+import API from "../utils/api";
 
 // Lazy load heavy components that are below the fold
 const Certifications = lazy(() => import("../components/Certifications"));
@@ -25,11 +26,31 @@ const LazyFallback = () => (
   </div>
 );
 export default function Home() {
+  const [homeContent, setHomeContent] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchHomeContent = async () => {
+      try {
+        const { data } = await API.get('/seo');
+        setHomeContent(data);
+      } catch (err) {
+        console.error('Error fetching home content:', err);
+        // Use default content if API fails
+        setHomeContent(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHomeContent();
+  }, []);
+
   return (
     <>
-      <Hero />
+      <Hero content={homeContent} />
       <ScrollingBanner />
-      <StatAbout />
+      <StatAbout content={homeContent} />
       <Suspense fallback={<LazyFallback />}>
         <ServicesSection/>
       </Suspense>

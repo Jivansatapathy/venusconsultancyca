@@ -67,19 +67,19 @@ router.post("/", upload.single("resume"), async (req, res) => {
     }
 
     // Check if job exists and is active
-    const job = await Job.findOne({ _id: jobId, isActive: true });
-    if (!job) {
+    const job = await Job.findById(jobId);
+    if (!job || !job.isActive) {
       return res.status(404).json({ error: "Job not found or no longer available" });
     }
 
     // Check if user already applied for this job
-    const existingApplication = await Application.findOne({ jobId, email });
-    if (existingApplication) {
+    const existingApplications = await Application.find({ jobId, email });
+    if (existingApplications.length > 0) {
       return res.status(400).json({ error: "You have already applied for this job" });
     }
 
     // Create application
-    const application = new Application({
+    const application = await Application.create({
       jobId,
       name,
       email,
@@ -89,8 +89,6 @@ router.post("/", upload.single("resume"), async (req, res) => {
       resumeOriginalName: req.file.originalname
     });
 
-    await application.save();
-
     // Send email notifications (async, don't block response)
     try {
       // Send notification to admin/recruiter
@@ -99,7 +97,7 @@ router.post("/", upload.single("resume"), async (req, res) => {
       // Send confirmation to applicant
       await sendApplicationConfirmation(application, job);
       
-      console.log('Email notifications sent successfully for application:', application._id);
+      console.log('Email notifications sent successfully for application:', application.id);
     } catch (emailError) {
       // Log email errors but don't fail the application submission
       console.error('Error sending email notifications:', emailError);
@@ -107,7 +105,7 @@ router.post("/", upload.single("resume"), async (req, res) => {
 
     res.status(201).json({ 
       message: "Application submitted successfully",
-      applicationId: application._id
+      applicationId: application.id
     });
   } catch (err) {
     // Clean up uploaded file if application creation fails
@@ -124,19 +122,23 @@ router.get("/job/:jobId", authAndRole("admin", "recruiter"), async (req, res) =>
     const { jobId } = req.params;
     const { status, page = 1, limit = 10 } = req.query;
 
-    let query = { jobId };
+    const filters = { jobId };
     if (status) {
-      query.status = status;
+      filters.status = status;
     }
 
-    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const allApplications = await Application.find(filters);
+    const total = allApplications.length;
     
-    const applications = await Application.find(query)
-      .sort({ appliedAt: -1 })
-      .skip(skip)
-      .limit(parseInt(limit));
-
-    const total = await Application.countDocuments(query);
+    // Sort by appliedAt descending and apply pagination
+    allApplications.sort((a, b) => {
+      const dateA = a.appliedAt?.toDate ? a.appliedAt.toDate() : new Date(a.appliedAt);
+      const dateB = b.appliedAt?.toDate ? b.appliedAt.toDate() : new Date(b.appliedAt);
+      return dateB - dateA;
+    });
+    
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const applications = allApplications.slice(skip, skip + parseInt(limit));
 
     res.json({
       applications,
@@ -157,20 +159,38 @@ router.get("/", authAndRole("admin", "recruiter"), async (req, res) => {
   try {
     const { status, page = 1, limit = 10 } = req.query;
 
-    let query = {};
+    const filters = {};
     if (status) {
-      query.status = status;
+      filters.status = status;
     }
 
-    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const allApplications = await Application.find(filters);
     
-    const applications = await Application.find(query)
-      .populate("jobId", "title location type department")
-      .sort({ appliedAt: -1 })
-      .skip(skip)
-      .limit(parseInt(limit));
-
-    const total = await Application.countDocuments(query);
+    // Populate jobId manually (Firestore doesn't have populate)
+    for (const app of allApplications) {
+      if (app.jobId) {
+        const job = await Job.findById(app.jobId);
+        if (job) {
+          app.job = {
+            title: job.title,
+            location: job.location,
+            type: job.type,
+            department: job.department
+          };
+        }
+      }
+    }
+    
+    // Sort by appliedAt descending
+    allApplications.sort((a, b) => {
+      const dateA = a.appliedAt?.toDate ? a.appliedAt.toDate() : new Date(a.appliedAt);
+      const dateB = b.appliedAt?.toDate ? b.appliedAt.toDate() : new Date(b.appliedAt);
+      return dateB - dateA;
+    });
+    
+    const total = allApplications.length;
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const applications = allApplications.slice(skip, skip + parseInt(limit));
 
     res.json({
       applications,
@@ -195,14 +215,23 @@ router.put("/:id", authAndRole("admin", "recruiter"), async (req, res) => {
     if (status) updateData.status = status;
     if (notes !== undefined) updateData.notes = notes;
 
-    const application = await Application.findByIdAndUpdate(
-      req.params.id,
-      updateData,
-      { new: true }
-    ).populate("jobId", "title location type department");
+    const application = await Application.update(req.params.id, updateData);
 
     if (!application) {
       return res.status(404).json({ error: "Application not found" });
+    }
+
+    // Populate jobId manually
+    if (application.jobId) {
+      const job = await Job.findById(application.jobId);
+      if (job) {
+        application.job = {
+          title: job.title,
+          location: job.location,
+          type: job.type,
+          department: job.department
+        };
+      }
     }
 
     res.json(application);
@@ -242,7 +271,7 @@ router.delete("/:id", authAndRole("admin"), async (req, res) => {
       fs.unlinkSync(application.resumePath);
     }
 
-    await Application.findByIdAndDelete(req.params.id);
+    await Application.delete(req.params.id);
     res.json({ message: "Application deleted successfully" });
   } catch (err) {
     res.status(500).json({ error: err.message });

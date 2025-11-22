@@ -13,14 +13,12 @@ router.post("/register", async (req, res) => {
       return res.status(400).json({ error: "Email and password required" });
     }
 
-    const existingAdmin = await Admin.findOne({ email });
+    const existingAdmin = await Admin.findByEmail(email);
     if (existingAdmin) {
       return res.status(400).json({ error: "Admin already exists" });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const admin = new Admin({ email, password: hashedPassword });
-    await admin.save();
+    const admin = await Admin.create({ email, password });
 
     res.status(201).json({ message: "Admin created successfully" });
   } catch (err) {
@@ -33,13 +31,13 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
-    const admin = await Admin.findOne({ email });
+    const admin = await Admin.findByEmail(email);
     if (!admin) return res.status(400).json({ error: "Invalid credentials" });
 
-    const isMatch = await bcrypt.compare(password, admin.password);
+    const isMatch = await Admin.comparePassword(password, admin.password);
     if (!isMatch) return res.status(400).json({ error: "Invalid credentials" });
 
-    const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign({ id: admin.id }, process.env.JWT_SECRET, { expiresIn: "1h" });
     res.json({ token });
   } catch (err) {
     res.status(500).json({ error: err.message });

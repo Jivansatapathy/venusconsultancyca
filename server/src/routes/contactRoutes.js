@@ -1,5 +1,4 @@
 import express from 'express';
-import mongoose from 'mongoose';
 import Contact from '../models/Contact.js';
 import { sendContactEmail, sendAutoReply } from '../services/emailService.js';
 import { authAndRole } from '../middleware/authMiddleware.js';
@@ -141,12 +140,17 @@ router.get('/admin', authAndRole('admin'), async (req, res) => {
     
     const skip = (pageNum - 1) * sanitizedLimit;
     
-    const contacts = await Contact.find(query)
-      .sort({ submittedAt: -1 })
-      .skip(skip)
-      .limit(sanitizedLimit);
+    const allContacts = await Contact.find(query);
+    const total = allContacts.length;
     
-    const total = await Contact.countDocuments(query);
+    // Sort by submittedAt descending
+    allContacts.sort((a, b) => {
+      const dateA = a.submittedAt?.toDate ? a.submittedAt.toDate() : new Date(a.submittedAt);
+      const dateB = b.submittedAt?.toDate ? b.submittedAt.toDate() : new Date(b.submittedAt);
+      return dateB - dateA;
+    });
+    
+    const contacts = allContacts.slice(skip, skip + sanitizedLimit);
     
     res.json({
       contacts,
@@ -169,8 +173,8 @@ router.patch('/admin/:id', authAndRole('admin'), async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
     
-    // Validate ID parameter using mongoose.Types.ObjectId.isValid
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    // Validate ID parameter (Firestore IDs are strings)
+    if (!id || typeof id !== 'string') {
       return res.status(400).json({ 
         error: 'Invalid contact ID format' 
       });
@@ -186,11 +190,7 @@ router.patch('/admin/:id', authAndRole('admin'), async (req, res) => {
       });
     }
     
-    const contact = await Contact.findByIdAndUpdate(
-      id, 
-      { status }, 
-      { new: true }
-    );
+    const contact = await Contact.update(id, { status });
     
     if (!contact) {
       return res.status(404).json({ error: 'Contact not found' });

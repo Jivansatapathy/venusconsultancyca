@@ -18,47 +18,23 @@ router.get("/", async (req, res) => {
       limit = 10 
     } = req.query;
 
-    let query = { isActive: true };
+    const filters = {
+      search,
+      type,
+      location,
+      department,
+      tags: tags ? (Array.isArray(tags) ? tags : [tags]) : undefined
+    };
 
-    // Text search
-    if (search) {
-      query.$or = [
-        { title: { $regex: search, $options: "i" } },
-        { description: { $regex: search, $options: "i" } },
-        { department: { $regex: search, $options: "i" } },
-        { tags: { $in: [new RegExp(search, "i")] } }
-      ];
-    }
-
-    // Filter by type
-    if (type) {
-      query.type = type;
-    }
-
-    // Filter by location
-    if (location) {
-      query.location = { $regex: location, $options: "i" };
-    }
-
-    // Filter by department
-    if (department) {
-      query.department = { $regex: department, $options: "i" };
-    }
-
-    // Filter by tags
-    if (tags) {
-      const tagArray = Array.isArray(tags) ? tags : [tags];
-      query.tags = { $in: tagArray };
-    }
-
-    const skip = (parseInt(page) - 1) * parseInt(limit);
+    // Remove undefined filters
+    Object.keys(filters).forEach(key => filters[key] === undefined && delete filters[key]);
     
-    const jobs = await Job.find(query)
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(parseInt(limit));
-
-    const total = await Job.countDocuments(query);
+    const allJobs = await Job.findActive(filters);
+    const total = allJobs.length;
+    
+    // Apply pagination
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const jobs = allJobs.slice(skip, skip + parseInt(limit));
 
     res.json({
       jobs,
@@ -77,8 +53,8 @@ router.get("/", async (req, res) => {
 // Public route: Get single job details
 router.get("/:id", async (req, res) => {
   try {
-    const job = await Job.findOne({ _id: req.params.id, isActive: true });
-    if (!job) return res.status(404).json({ message: "Job not found" });
+    const job = await Job.findById(req.params.id);
+    if (!job || !job.isActive) return res.status(404).json({ message: "Job not found" });
     res.json(job);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -88,8 +64,7 @@ router.get("/:id", async (req, res) => {
 // Admin only: Create job
 router.post("/", authAndRole("admin"), async (req, res) => {
   try {
-    const job = new Job(req.body);
-    await job.save();
+    const job = await Job.create(req.body);
     res.status(201).json(job);
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -99,11 +74,7 @@ router.post("/", authAndRole("admin"), async (req, res) => {
 // Admin only: Update job
 router.put("/:id", authAndRole("admin"), async (req, res) => {
   try {
-    const job = await Job.findByIdAndUpdate(
-      req.params.id, 
-      { ...req.body, updatedAt: new Date() }, 
-      { new: true }
-    );
+    const job = await Job.update(req.params.id, req.body);
     if (!job) return res.status(404).json({ message: "Job not found" });
     res.json(job);
   } catch (err) {
@@ -114,8 +85,9 @@ router.put("/:id", authAndRole("admin"), async (req, res) => {
 // Admin only: Delete job
 router.delete("/:id", authAndRole("admin"), async (req, res) => {
   try {
-    const job = await Job.findByIdAndDelete(req.params.id);
+    const job = await Job.findById(req.params.id);
     if (!job) return res.status(404).json({ message: "Job not found" });
+    await Job.delete(req.params.id);
     res.json({ message: "Job deleted successfully" });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -125,7 +97,11 @@ router.delete("/:id", authAndRole("admin"), async (req, res) => {
 // Admin/Recruiter: Get all jobs (including inactive)
 router.get("/admin/all", authAndRole("admin", "recruiter"), async (req, res) => {
   try {
-    const jobs = await Job.find().sort({ createdAt: -1 });
+    const filters = {};
+    if (req.query.isActive !== undefined) {
+      filters.isActive = req.query.isActive === "true";
+    }
+    const jobs = await Job.findAll(filters);
     res.json(jobs);
   } catch (err) {
     res.status(500).json({ error: err.message });

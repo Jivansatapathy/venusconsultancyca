@@ -1,26 +1,96 @@
 // server/src/models/Admin.js
-import mongoose from "mongoose";
+import { db } from "../config/firebase.js";
 import bcrypt from "bcryptjs";
 
-const AdminSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true }, // hashed
-  role: { type: String, default: "admin" },
-}, { timestamps: true });
+const COLLECTION_NAME = "admins";
 
-// hash password before save
-AdminSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
+// Helper function to hash password
+const hashPassword = async (password) => {
   const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
-});
-
-// helper to check password
-AdminSchema.methods.comparePassword = function (plain) {
-  return bcrypt.compare(plain, this.password);
+  return bcrypt.hash(password, salt);
 };
 
-const Admin = mongoose.model("Admin", AdminSchema);
+// Helper function to compare password
+const comparePassword = async (plainPassword, hashedPassword) => {
+  return bcrypt.compare(plainPassword, hashedPassword);
+};
+
+// Create admin
+const createAdmin = async (adminData) => {
+  const { password, ...rest } = adminData;
+  const hashedPassword = await hashPassword(password);
+  
+  const adminRef = db.collection(COLLECTION_NAME).doc();
+  const admin = {
+    ...rest,
+    password: hashedPassword,
+    role: rest.role || "admin",
+    createdAt: new Date(),
+    updatedAt: new Date()
+  };
+  
+  await adminRef.set(admin);
+  return { id: adminRef.id, ...admin };
+};
+
+// Find admin by email
+const findAdminByEmail = async (email) => {
+  const snapshot = await db.collection(COLLECTION_NAME)
+    .where("email", "==", email)
+    .limit(1)
+    .get();
+  
+  if (snapshot.empty) return null;
+  
+  const doc = snapshot.docs[0];
+  return { id: doc.id, ...doc.data() };
+};
+
+// Find admin by ID
+const findAdminById = async (id) => {
+  const doc = await db.collection(COLLECTION_NAME).doc(id).get();
+  if (!doc.exists) return null;
+  return { id: doc.id, ...doc.data() };
+};
+
+// Update admin
+const updateAdmin = async (id, updateData) => {
+  const { password, ...rest } = updateData;
+  const update = {
+    ...rest,
+    updatedAt: new Date()
+  };
+  
+  if (password) {
+    update.password = await hashPassword(password);
+  }
+  
+  await db.collection(COLLECTION_NAME).doc(id).update(update);
+  return findAdminById(id);
+};
+
+// Delete admin
+const deleteAdmin = async (id) => {
+  await db.collection(COLLECTION_NAME).doc(id).delete();
+};
+
+// Delete all admins (for seeding)
+const deleteAllAdmins = async () => {
+  const snapshot = await db.collection(COLLECTION_NAME).get();
+  const batch = db.batch();
+  snapshot.docs.forEach(doc => batch.delete(doc.ref));
+  await batch.commit();
+};
+
+const Admin = {
+  create: createAdmin,
+  findByEmail: findAdminByEmail,
+  findById: findAdminById,
+  update: updateAdmin,
+  delete: deleteAdmin,
+  deleteAll: deleteAllAdmins,
+  comparePassword,
+  hashPassword
+};
+
 export default Admin;

@@ -3,8 +3,18 @@ import { Link } from "react-router-dom";
 import Lottie from "lottie-react";
 import "./ThirdHero.css";
 
-const ThirdHero = () => {
+const ThirdHero = ({ content }) => {
   const [animationData, setAnimationData] = useState(null);
+
+  // Use content from database or fallback to defaults
+  const greeting = content?.heroGreeting || '- Empower Your Workforce -';
+  const titleLine1 = content?.heroTitleLine1 || 'Shape the Future of';
+  const titleLine2 = content?.heroTitleLine2 || 'Your Organization Today';
+  const subtitle = content?.heroSubtitle || 'Connect with top-tier talent across Canada and discover professionals who drive growth, innovation, and success for Canadian businesses.';
+  const button1Text = content?.heroButton1Text || 'Book a Consultation';
+  const button1Link = content?.heroButton1Link || '/book-call';
+  const button2Text = content?.heroButton2Text || 'Our Services';
+  const button2Link = content?.heroButton2Link || '/services';
 
   useEffect(() => {
     // Load the Lottie animation
@@ -29,21 +39,21 @@ const ThirdHero = () => {
       <div className="third-hero__container">
         <div className="third-hero__content">
           <div className="third-hero__left">
-            <div className="third-hero__greeting">- Empower Your Workforce -</div>
+            <div className="third-hero__greeting">{greeting}</div>
             <h1 className="third-hero__title">
-              <span className="title-line-1">Shape the Future of</span>
-              <span className="title-line-2">Your Organization Today</span>
+              <span className="title-line-1">{titleLine1}</span>
+              <span className="title-line-2">{titleLine2}</span>
             </h1>
             <p className="third-hero__subtitle">
-            Connect with top-tier talent across Canada and discover professionals who drive growth, innovation, and success for Canadian businesses.
+              {subtitle}
             </p>
             
             <div className="third-hero__buttons">
-              <Link to="/book-call" className="btn btn--primary-dark">
-                Book a Consultation
+              <Link to={button1Link} className="btn btn--primary-dark">
+                {button1Text}
               </Link>
-              <Link to="/services" className="btn btn--outline-dark">
-                Our Services
+              <Link to={button2Link} className="btn btn--outline-dark">
+                {button2Text}
               </Link>
             </div>
           </div>

@@ -15,24 +15,20 @@ router.post("/", authAndRole("admin"), async (req, res) => {
     }
 
     // Check if recruiter already exists
-    const existingRecruiter = await Recruiter.findOne({ email });
+    const existingRecruiter = await Recruiter.findByEmail(email);
     if (existingRecruiter) {
       return res.status(400).json({ error: "Recruiter with this email already exists" });
     }
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const recruiter = new Recruiter({
+    const recruiter = await Recruiter.create({
       name,
       email,
-      password: hashedPassword,
+      password,
       role: "recruiter"
     });
     
-    await recruiter.save();
     res.status(201).json({ 
-      _id: recruiter._id,
+      id: recruiter.id,
       name: recruiter.name,
       email: recruiter.email,
       role: recruiter.role,
@@ -46,7 +42,11 @@ router.post("/", authAndRole("admin"), async (req, res) => {
 // Admin only: Get all recruiters
 router.get("/", authAndRole("admin"), async (req, res) => {
   try {
-    const recruiters = await Recruiter.find().select("-password");
+    const allRecruiters = await Recruiter.find();
+    const recruiters = allRecruiters.map(r => {
+      const { password, ...rest } = r;
+      return rest;
+    });
     res.json(recruiters);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -64,17 +64,14 @@ router.put("/:id", authAndRole("admin"), async (req, res) => {
       updateData.password = await bcrypt.hash(password, 10);
     }
 
-    const recruiter = await Recruiter.findByIdAndUpdate(
-      req.params.id,
-      updateData,
-      { new: true }
-    ).select("-password");
+    const recruiter = await Recruiter.update(req.params.id, updateData);
+    const { password: _, ...recruiterWithoutPassword } = recruiter;
 
     if (!recruiter) {
       return res.status(404).json({ error: "Recruiter not found" });
     }
 
-    res.json(recruiter);
+    res.json(recruiterWithoutPassword);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -83,10 +80,11 @@ router.put("/:id", authAndRole("admin"), async (req, res) => {
 // Admin only: Delete recruiter
 router.delete("/:id", authAndRole("admin"), async (req, res) => {
   try {
-    const recruiter = await Recruiter.findByIdAndDelete(req.params.id);
+    const recruiter = await Recruiter.findById(req.params.id);
     if (!recruiter) {
       return res.status(404).json({ error: "Recruiter not found" });
     }
+    await Recruiter.delete(req.params.id);
     res.json({ message: "Recruiter deleted successfully" });
   } catch (err) {
     res.status(500).json({ error: err.message });

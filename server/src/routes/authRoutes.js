@@ -34,7 +34,7 @@ const REFRESH_TOKEN_DAYS = parseInt(process.env.REFRESH_TOKEN_DAYS || "30", 10);
 const REFRESH_TOKEN_MS = REFRESH_TOKEN_DAYS * 24 * 60 * 60 * 1000;
 
 function signAccess(user) {
-  return jwt.sign({ id: user._id, role: user.role, email: user.email }, config.ACCESS_SECRET, {
+  return jwt.sign({ id: user.id, role: user.role, email: user.email }, config.ACCESS_SECRET, {
     expiresIn: ACCESS_EXPIRES,
   });
 }
@@ -55,11 +55,11 @@ router.post("/login", async (req, res) => {
     }
 
     // Try to find user in both Admin and Recruiter models
-    let user = await Admin.findOne({ email });
+    let user = await Admin.findByEmail(email);
     let userModel = "Admin";
     
     if (!user) {
-      user = await Recruiter.findOne({ email });
+      user = await Recruiter.findByEmail(email);
       userModel = "Recruiter";
     }
 
@@ -68,12 +68,8 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    if (typeof user.comparePassword !== "function") {
-      console.error("[auth] comparePassword not found on model for", email);
-      return res.status(500).json({ message: "Server error" });
-    }
-
-    const ok = await user.comparePassword(password);
+    // Compare password using the model's comparePassword method
+    const ok = await Admin.comparePassword(password, user.password);
     if (!ok) {
       console.warn("[auth] invalid password for", email);
       return res.status(401).json({ message: "Invalid credentials" });
@@ -86,7 +82,7 @@ router.post("/login", async (req, res) => {
     const expiresAt = new Date(Date.now() + REFRESH_TOKEN_MS);
 
     const rt = await RefreshToken.create({
-      userId: user._id,
+      userId: user.id,
       userModel: userModel,
       tokenHash,
       ip: req.ip,
@@ -110,7 +106,7 @@ router.post("/login", async (req, res) => {
     
     return res.json({
       accessToken,
-      user: { id: user._id, email: user.email, name: user.name, role: user.role },
+      user: { id: user.id, email: user.email, name: user.name, role: user.role },
     });
   } catch (err) {
     console.error("[auth] login error:", err && err.stack ? err.stack : err);
@@ -135,24 +131,14 @@ router.post("/refresh", async (req, res) => {
       return res.status(401).json({ message: "No refresh token" });
     }
 
-    // simple lookup strategy (small scale)
-    const records = await RefreshToken.find({ revoked: false }).sort({ createdAt: -1 }).limit(200);
-    let matched = null;
-    for (const r of records) {
-      // eslint-disable-next-line no-await-in-loop
-      if (await bcrypt.compare(rt, r.tokenHash)) {
-        if (r.expiresAt < new Date()) {
-          console.warn("[auth] refresh token expired for record", r._id);
-          continue;
-        }
-        matched = r;
-        break;
-      }
-    }
+    // Find token by comparing plain token with stored hashes
+    const matched = await RefreshToken.findByPlainToken(rt);
 
     if (!matched) {
       console.warn("[auth] no matching refresh token record");
-      return res.status(401).json({ message: "Invalid refresh token" });
+      // Clear the invalid cookie
+      res.clearCookie("vh_rt", { path: "/", httpOnly: true, secure: config.NODE_ENV === "production", sameSite: config.NODE_ENV === "production" ? "none" : "lax" });
+      return res.status(401).json({ message: "Invalid or expired refresh token" });
     }
 
     const Model = matched.userModel === "Recruiter" ? Recruiter : Admin;
@@ -166,17 +152,16 @@ router.post("/refresh", async (req, res) => {
     const newRtString = createRefreshTokenString();
     const newHash = await bcrypt.hash(newRtString, 10);
     const newRecord = await RefreshToken.create({
-      userId: user._id,
+      userId: user.id,
       userModel: matched.userModel,
       tokenHash: newHash,
       ip: req.ip,
       userAgent: req.get("User-Agent") || "",
       expiresAt: new Date(Date.now() + REFRESH_TOKEN_MS),
-      rotatedFrom: matched._id,
+      rotatedFrom: matched.id,
     });
 
-    matched.revoked = true;
-    await matched.save();
+    await RefreshToken.revoke(matched.id);
 
     res.cookie("vh_rt", newRtString, {
       httpOnly: true,
@@ -190,7 +175,7 @@ router.post("/refresh", async (req, res) => {
     console.log("[auth] refresh success for user", user.email);
     return res.json({ 
       accessToken,
-      user: { id: user._id, email: user.email, name: user.name, role: user.role }
+      user: { id: user.id, email: user.email, name: user.name, role: user.role }
     });
   } catch (err) {
     console.error("[auth] refresh error:", err && err.stack ? err.stack : err);
@@ -203,13 +188,10 @@ router.post("/logout", async (req, res) => {
     console.log("[auth] /logout called");
     const rt = req.cookies?.vh_rt;
     if (rt) {
-      const records = await RefreshToken.find({ revoked: false }).limit(200);
-      for (const r of records) {
-        // eslint-disable-next-line no-await-in-loop
-        if (await bcrypt.compare(rt, r.tokenHash)) {
-          r.revoked = true;
-          await r.save();
-        }
+      // Find and revoke the token
+      const matched = await RefreshToken.findByPlainToken(rt);
+      if (matched) {
+        await RefreshToken.revoke(matched.id);
       }
     }
     // Clear cookie using the same path it was set on
