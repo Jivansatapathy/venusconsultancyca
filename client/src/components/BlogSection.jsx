@@ -1,93 +1,107 @@
 // client/src/components/BlogSection.jsx
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
+import { useSEOContent } from "../context/SEOContentContext";
 import "./BlogSection.css";
-import API from "../utils/api";
+import blogConfig from "../data/blogConfig.js";
+
+const formatDate = (iso) => {
+  try {
+    const d = new Date(iso);
+    return d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+  } catch {
+    return iso;
+  }
+};
 
 const BlogSection = () => {
-  const [blogs, setBlogs] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchBlogs = async () => {
-      try {
-        const { data } = await API.get('/blogs?limit=3');
-        setBlogs(data.blogs || []);
-      } catch (err) {
-        console.error('Error fetching blogs:', err);
-        setBlogs([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBlogs();
-  }, []);
-
-  if (loading) {
-    return (
-      <section className="vh-blog" aria-labelledby="vh-blog-heading">
-        <div className="vh-blog__card">
-          <div style={{ textAlign: 'center', padding: '2rem' }}>Loading blogs...</div>
-        </div>
-      </section>
-    );
-  }
-
-  if (blogs.length === 0) {
-    return null; // Don't show section if no blogs
-  }
+  const { content } = useSEOContent();
+  const seoBlog = content?.home?.blog;
+  const blogData = seoBlog?.items?.length > 0 ? seoBlog : blogConfig;
+  const { heading, subheading, items, readMoreUrl } = blogData;
+  const visible = items.slice(0, 3);
 
   return (
     <section className="vh-blog" aria-labelledby="vh-blog-heading">
       <div className="vh-blog__card">
         <header className="vh-blog__header">
-          <h2 id="vh-blog-heading" className="vh-blog__heading">Insights & Articles</h2>
-          <p className="vh-blog__sub">
-            Latest thinking on hiring, talent strategy and interview best practices from the Venus Hiring team.
-          </p>
+          <h2 id="vh-blog-heading" className="vh-blog__heading">{heading}</h2>
+          {subheading && <p className="vh-blog__sub">{subheading}</p>}
         </header>
 
         <div className="vh-blog__grid">
-          {blogs.map((blog) => (
-            <article key={blog.id || blog._id} className="vh-blog__item">
-              <Link to={`/blog/${blog.slug}`} className="vh-blog__media-link" aria-label={`Read full article: ${blog.title}`}>
-                <div className="vh-blog__media">
-                  {blog.imageUrl ? (
-                    <img src={blog.imageUrl} alt={blog.title} loading="lazy" decoding="async" />
-                  ) : (
-                    <div style={{ width: '100%', height: '100%', background: '#f2f5f6', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#999' }}>
-                      No Image
+          {visible.map((b) => {
+            const postUrl = `/blog/${b.slug}`;
+            const getImageUrl = (imageUrl) => {
+              if (!imageUrl) return '/images/placeholder.jpg';
+              // Firebase Storage URLs are already full HTTPS URLs
+              if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+                return imageUrl;
+              }
+              // Legacy backend images (for backward compatibility)
+              if (imageUrl.startsWith('/api/')) {
+                return imageUrl;
+              }
+              if (imageUrl.startsWith('/')) {
+                return imageUrl;
+              }
+              // Fallback for old format
+              return `/api/content${imageUrl}`;
+            };
+            // No need for truncateExcerpt anymore - CSS handles it with line-clamp
+            
+            // Generate excerpt from paragraph1 if excerpt is not available (for new structured format)
+            const getExcerpt = () => {
+              if (b.excerpt) return b.excerpt;
+              if (b.paragraph1) {
+                const text = b.paragraph1.replace(/\n/g, ' ').trim();
+                return text.length > 150 ? text.substring(0, 150) + '...' : text;
+              }
+              return '';
+            };
+
+            return (
+              <article key={b.slug} className="vh-blog__item">
+                <Link to={postUrl} className="vh-blog__media-link" aria-label={`Read full article: ${b.title}`}>
+                  <div className="vh-blog__media">
+                    <img 
+                      src={getImageUrl(b.featuredImage || b.image)} 
+                      alt={b.title} 
+                      loading="lazy" 
+                      decoding="async"
+                      onError={(e) => {
+                        e.target.src = '/images/placeholder.jpg';
+                      }}
+                    />
+                  </div>
+                </Link>
+
+                <div className="vh-blog__content">
+                  {b.tags?.length > 0 && (
+                    <div className="vh-blog__meta">
+                      {b.tags.slice(0, 2).map((t) => (
+                        <span key={t} className="vh-blog__tag">{t}</span>
+                      ))}
                     </div>
                   )}
-                </div>
-              </Link>
 
-              <div className="vh-blog__content">
-                {blog.tags && blog.tags.length > 0 && (
-                  <div className="vh-blog__meta">
-                    {blog.tags.slice(0, 2).map((tag, index) => (
-                      <span key={index} className="vh-blog__tag">{tag}</span>
-                    ))}
-                  </div>
-                )}
+                  <h3 className="vh-blog__title">
+                    <Link to={postUrl}>{b.title}</Link>
+                  </h3>
 
-                <h3 className="vh-blog__title">
-                  <Link to={`/blog/${blog.slug}`}>{blog.title}</Link>
-                </h3>
+                  <p className="vh-blog__excerpt">{getExcerpt()}</p>
 
-                <p className="vh-blog__excerpt">{blog.excerpt || blog.content?.substring(0, 150) + '...'}</p>
-
-                <Link to={`/blog/${blog.slug}`} className="vh-blog__readlink">
+                <Link to={postUrl} className="vh-blog__readlink">
                   Read more →
                 </Link>
               </div>
             </article>
-          ))}
+            );
+          })}
         </div>
 
         <div className="vh-blog__more">
-          <Link to="/blogs" className="btn btn--primary">View all articles</Link>
+          <a href={readMoreUrl} className="btn btn--primary">View all articles</a>
         </div>
       </div>
     </section>
