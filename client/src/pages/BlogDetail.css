@@ -109,15 +109,19 @@
 
 .blog-detail-image {
   width: 100%;
-  margin: 0;
+  margin: 1.5rem 0;
   overflow: hidden;
+  border-radius: 8px;
+  background: #f8f9fa;
 }
 
 .blog-detail-image img {
   width: 100%;
   height: auto;
   display: block;
-  object-fit: cover;
+  object-fit: contain;
+  max-height: 600px;
+  margin: 0 auto;
 }
 
 .blog-detail-excerpt {
