@@ -1,75 +1,109 @@
 // client/src/components/ContactSection.jsx
 import React from "react";
+import { MapPin, Phone, Mail } from "lucide-react";
 import "./ContactSection.css";
 
 /**
  * ContactSection - displays office locations and contact information
  */
 const ContactSection = () => {
-  const offices = [
-    {
-      title: "Toronto, Canada",
-      flag: "https://flagcdn.com/w40/ca.png",
-      flagWrapperClass: "office-flag-wrapper--canada",
-      address: "#205 - 1085 Bellamy Road North, Toronto, ON",
-      phones: ["647-722-0837"]
-    },
-    {
-      title: "Vancouver, Canada",
-      flag: "https://flagcdn.com/w40/ca.png",
-      flagWrapperClass: "office-flag-wrapper--canada",
-      address: "Serving clients across British Columbia",
-      phones: ["647-722-0837"]
-    },
-    {
-      title: "Montreal, Canada",
-      flag: "https://flagcdn.com/w40/ca.png",
-      flagWrapperClass: "office-flag-wrapper--canada",
-      address: "Serving clients across Quebec",
-      phones: ["647-722-0837"]
-    }
-  ];
-
   return (
     <section className="contact-section" aria-label="Contact information">
       <div className="contact-container">
         <h3 className="contact-title">Our Office Locations</h3>
-        <p className="contact-subtitle">Connect with us across Canada—serving businesses from coast to coast</p>
+        <p className="contact-subtitle">Connect with us across multiple locations worldwide</p>
         
         <div className="offices-grid">
-          {offices.map((office, index) => (
-            <div key={index} className="office-card">
-              <div className="office-header">
-                <div className={`office-flag-wrapper ${office.flagWrapperClass}`}>
-                  <img 
-                    src={office.flag} 
-                    alt={`${office.title} flag`}
-                    className="office-flag"
-                  />
-                </div>
-                <h4 className="office-title">{office.title}</h4>
+          <div className="office-card">
+            <div className="office-header">
+              <div className="office-flag-wrapper office-flag-wrapper--canada">
+                <img 
+                  src="https://flagcdn.com/w40/ca.png" 
+                  alt="Canada flag" 
+                  className="office-flag"
+                />
               </div>
-              
-              <div className="office-details">
-                <div className="office-detail-item">
-                  <svg className="office-icon office-icon--green" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                    <circle cx="12" cy="10" r="3"></circle>
-                  </svg>
-                  <span className="office-address">{office.address}</span>
-                </div>
-                
-                {office.phones.map((phone, idx) => (
-                  <div key={idx} className="office-detail-item">
-                    <svg className="office-icon office-icon--green" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.86 19.86 0 0 1 3.08 5.18 2 2 0 0 1 5 3h3a2 2 0 0 1 2 1.72c.12.81.3 1.61.54 2.39a2 2 0 0 1-.45 2.11L9.1 10.9a16 16 0 0 0 6 6l1.68-1.01a2 2 0 0 1 2.11-.45c.78.24 1.58.42 2.39.54A2 2 0 0 1 22 16.92z"></path>
-                    </svg>
-                    <a href={`tel:${phone.replace(/\s/g, '')}`} className="office-phone">{phone}</a>
-                  </div>
-                ))}
+              <h4 className="office-title" aria-label="Toronto, Canada">
+                Toronto, Canada
+              </h4>
+            </div>
+            <div className="office-details">
+              <div className="office-detail-item">
+                <MapPin size={18} className="office-icon office-icon--green" />
+                <p className="office-address">#205 - 1085 Bellamy Road North, Toronto, ON</p>
+              </div>
+              <div className="office-detail-item">
+                <Phone size={18} className="office-icon office-icon--green" />
+                <p className="office-phone">647-722-0837</p>
+              </div>
+              <div className="office-detail-item">
+                <Mail size={18} className="office-icon office-icon--green" />
+                <a href="mailto:info@venushiring.ca" className="office-email">info@venushiring.ca</a>
               </div>
             </div>
-          ))}
+          </div>
+
+          <div className="office-card">
+            <div className="office-header">
+              <div className="office-flag-wrapper office-flag-wrapper--usa">
+                <img 
+                  src="https://flagcdn.com/w40/us.png" 
+                  alt="USA flag" 
+                  className="office-flag"
+                />
+              </div>
+              <h4 className="office-title" aria-label="Michigan, USA">
+                Michigan, USA
+              </h4>
+            </div>
+            <div className="office-details">
+              <div className="office-detail-item">
+                <MapPin size={18} className="office-icon office-icon--green" />
+                <p className="office-address">880 W Long Lake Rd Ste 225 | Troy, MI 48098</p>
+              </div>
+              <div className="office-detail-item">
+                <Phone size={18} className="office-icon office-icon--green" />
+                <p className="office-phone">248-275-1077</p>
+              </div>
+              <div className="office-detail-item">
+                <Phone size={18} className="office-icon office-icon--green" />
+                <p className="office-phone">718-715-0770</p>
+              </div>
+              <div className="office-detail-item">
+                <Mail size={18} className="office-icon office-icon--green" />
+                <a href="mailto:info@venushiring.com" className="office-email">info@venushiring.com</a>
+              </div>
+            </div>
+          </div>
+
+          <div className="office-card">
+            <div className="office-header">
+              <div className="office-flag-wrapper office-flag-wrapper--india">
+                <img 
+                  src="https://flagcdn.com/w40/in.png" 
+                  alt="India flag" 
+                  className="office-flag"
+                />
+              </div>
+              <h4 className="office-title" aria-label="India">
+                India
+              </h4>
+            </div>
+            <div className="office-details">
+              <div className="office-detail-item">
+                <MapPin size={18} className="office-icon office-icon--green" />
+                <p className="office-address">Mumbai, Surat, Chennai, Hyderabad</p>
+              </div>
+              <div className="office-detail-item">
+                <Phone size={18} className="office-icon office-icon--green" />
+                <p className="office-phone">+91-261-2601177</p>
+              </div>
+              <div className="office-detail-item">
+                <Phone size={18} className="office-icon office-icon--green" />
+                <p className="office-phone">+91-261-391177</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

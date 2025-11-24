@@ -5,24 +5,24 @@ import API from "../utils/api";
 
 const offices = [
   {
-    title: "Toronto, Canada",
-    flag: "https://flagcdn.com/w40/ca.png",
-    flagWrapperClass: "office-flag-wrapper--canada",
-    address: "#205 - 1085 Bellamy Road North, Toronto, ON",
-    phones: ["647-722-0837"]
+    title: "Michigan, USA",
+    flag: "https://flagcdn.com/w40/us.png",
+    flagWrapperClass: "office-flag-wrapper--usa",
+    address: "225 – 880 W Long Lake Road, Troy, MI 48098",
+    phones: ["248-275-1077"]
   },
   {
-    title: "Vancouver, Canada",
-    flag: "https://flagcdn.com/w40/ca.png",
-    flagWrapperClass: "office-flag-wrapper--canada",
-    address: "Serving clients across British Columbia",
-    phones: ["647-722-0837"]
+    title: "India",
+    flag: "https://flagcdn.com/w40/in.png",
+    flagWrapperClass: "office-flag-wrapper--india",
+    address: "Serving clients across India",
+    phones: ["+91-XXXXXXXXXX"]
   },
   {
-    title: "Montreal, Canada",
+    title: "Canada",
     flag: "https://flagcdn.com/w40/ca.png",
     flagWrapperClass: "office-flag-wrapper--canada",
-    address: "Serving clients across Quebec",
+    address: "#205 - 1085 Bellamy Road North, Toronto, ON. Serving clients across Canada",
     phones: ["647-722-0837"]
   }
 ];

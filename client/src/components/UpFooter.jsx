@@ -20,9 +20,9 @@ const UpFooter = () => {
               Build the Right Teams.
             </h2>
             <p className="vh-upfooter__description">
-              At Venus Consultancy, we connect exceptional Canadian talent with forward-thinking companies across Canada—from coast to coast.
+              At Venus Consultancy, we connect exceptional talent with forward-thinking companies.
               <br />
-              Whether you're a Canadian business looking to hire or a professional seeking your next opportunity, we make the perfect match happen.
+              Whether you're a business looking to hire or a professional seeking your next opportunity, we make the perfect match happen.
             </p>
             <div className="vh-upfooter__buttons">
               <a href="/contact" className="vh-upfooter__btn vh-upfooter__btn--primary">
