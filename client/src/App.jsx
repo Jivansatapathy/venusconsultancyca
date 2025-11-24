@@ -29,6 +29,9 @@ const ServiceCategory = lazy(() => import("./pages/ServiceCategory"));
 const BlogDetail = lazy(() => import("./pages/BlogDetail"));
 const Blogs = lazy(() => import("./pages/Blogs"));
 const Gallery = lazy(() => import("./pages/Gallery"));
+const Privacy = lazy(() => import("./pages/Privacy"));
+const Terms = lazy(() => import("./pages/Terms"));
+const Disclaimer = lazy(() => import("./pages/Disclaimer"));
 
 // Loading fallback component
 const LoadingFallback = () => (
@@ -168,6 +171,21 @@ function AppContent() {
         <Route path="/service-category/:categoryKey" element={
           <Suspense fallback={<LoadingFallback />}>
             <ServiceCategory />
+          </Suspense>
+        } />
+        <Route path="/privacy" element={
+          <Suspense fallback={<LoadingFallback />}>
+            <Privacy />
+          </Suspense>
+        } />
+        <Route path="/terms" element={
+          <Suspense fallback={<LoadingFallback />}>
+            <Terms />
+          </Suspense>
+        } />
+        <Route path="/disclaimer" element={
+          <Suspense fallback={<LoadingFallback />}>
+            <Disclaimer />
           </Suspense>
         } />
 
