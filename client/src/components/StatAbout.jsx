@@ -1,0 +1,202 @@
+// client/src/components/StatAbout.jsx
+import React, { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
+import { useSEOContent } from "../context/SEOContentContext";
+import "./StatAbout.css";
+
+export default function StatAbout() {
+  const { content } = useSEOContent();
+  const statContent = content?.home?.statAbout || {};
+
+  const sectionRef = useRef(null);
+  const [inView, setInView] = useState(false);
+  const [counts, setCounts] = useState({ clients: 0, satisfaction: 0, success: 0, placements: 0, experience: 0 });
+  const animationRef = useRef(null);
+  const hasAnimatedRef = useRef(false);
+  const statContentRef = useRef(statContent);
+
+  // IntersectionObserver to detect when section comes into view
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  // Update statContent ref
+  useEffect(() => {
+    statContentRef.current = statContent;
+  }, [statContent]);
+
+  // Counter animation when in view
+  useEffect(() => {
+    if (!inView) return;
+    if (hasAnimatedRef.current) return;
+    
+    const startAnimation = () => {
+      // Cancel any existing animation
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+        animationRef.current = null;
+      }
+
+      const currentStatContent = statContentRef.current;
+      
+      // Extract number from experienceNumber (e.g., "18+" -> 18)
+      const experienceStr = currentStatContent?.experienceNumber || "18+";
+      const experienceNum = parseInt(experienceStr.replace(/\D/g, '')) || 18;
+      
+      const targets = {
+        clients: parseInt(currentStatContent?.stat1Number || 77),
+        satisfaction: parseInt(currentStatContent?.stat2Number || 98),
+        success: parseInt(currentStatContent?.stat3Number || 99),
+        placements: 5000,
+        experience: experienceNum
+      };
+
+      // Mark as started to prevent multiple animations
+      hasAnimatedRef.current = true;
+
+      const duration = 2000; // 2 seconds
+      let startTime = null;
+
+      // Ease out cubic function
+      const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+      const animate = (timestamp) => {
+        if (startTime === null) {
+          startTime = timestamp;
+        }
+        
+        const elapsed = timestamp - startTime;
+        const progress = Math.min(1, elapsed / duration);
+        const eased = easeOutCubic(progress);
+
+        setCounts({
+          clients: Math.round(targets.clients * eased),
+          satisfaction: Math.round(targets.satisfaction * eased),
+          success: Math.round(targets.success * eased),
+          placements: Math.round(targets.placements * eased),
+          experience: Math.round(targets.experience * eased)
+        });
+
+        if (progress < 1) {
+          animationRef.current = requestAnimationFrame(animate);
+        } else {
+          // Ensure final values are set exactly
+          setCounts({
+            clients: targets.clients,
+            satisfaction: targets.satisfaction,
+            success: targets.success,
+            placements: targets.placements,
+            experience: targets.experience
+          });
+          animationRef.current = null;
+        }
+      };
+
+      // Start animation immediately
+      animationRef.current = requestAnimationFrame(animate);
+    };
+
+    startAnimation();
+    
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+        animationRef.current = null;
+      }
+    };
+  }, [inView]);
+
+  // Format number with suffix
+  const formatStat = (value, suffix) => {
+    if (suffix === 'K+') {
+      return `${value}+`;
+    }
+    return `${value}${suffix}`;
+  };
+
+  return (
+    <section className="stat-about" ref={sectionRef}>
+      <div className="stat-about__container">
+        {/* Header Section */}
+        <div className="stat-about__header">
+          <h2 className="stat-about__main-title">
+            {statContent.title || "Our proven track record speaks volumes"}
+          </h2>
+          <p className="stat-about__main-description">
+            {statContent.description || "We deliver measurable results through strategic talent solutions. Our commitment transforms businesses across industries."}
+          </p>
+        </div>
+
+        {/* Grid Section - 5 Cards */}
+        <div className="stat-about__grid">
+          {/* Card 1 - Large Vertical (Top Left) */}
+          <div className="stat-about__card stat-about__card--large">
+            <div className="stat-about__card-number">
+              {counts.experience}+
+            </div>
+            <div className="stat-about__card-content">
+              <div className="stat-about__card-title">Years of expertise</div>
+              <div className="stat-about__card-subtitle">Decades of refined recruitment strategies</div>
+            </div>
+          </div>
+
+          {/* Card 2 - Image Placeholder (Top Middle) */}
+          <div className="stat-about__card stat-about__card--image">
+            <img 
+              src={statContent.images?.image1 || "/images/imagetrail/image1.jpg"} 
+              alt="Team collaboration" 
+              className="stat-about__card-image"
+              loading="lazy"
+            />
+          </div>
+
+          {/* Card 3 - Stat Card (Top Right) */}
+          <div className="stat-about__card stat-about__card--stat">
+            <div className="stat-about__card-number">
+              {counts.placements.toLocaleString()}+
+            </div>
+            <div className="stat-about__card-content">
+              <div className="stat-about__card-title">Successful placements</div>
+              <div className="stat-about__card-subtitle">Connecting talent with opportunity</div>
+            </div>
+          </div>
+
+          {/* Card 4 - Stat Card (Bottom Left) */}
+          <div className="stat-about__card stat-about__card--stat">
+            <div className="stat-about__card-number">
+              {formatStat(counts.satisfaction, statContent.stat2Suffix || '%')}
+            </div>
+            <div className="stat-about__card-content">
+              <div className="stat-about__card-title">Client satisfaction</div>
+              <div className="stat-about__card-subtitle">Consistently exceeding expectations</div>
+            </div>
+          </div>
+
+          {/* Card 5 - Image Placeholder (Bottom Right) */}
+          <div className="stat-about__card stat-about__card--image">
+            <img 
+              src={statContent.images?.image2 || "/images/imagetrail/image2.jpg"} 
+              alt="Professional team" 
+              className="stat-about__card-image"
+              loading="lazy"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

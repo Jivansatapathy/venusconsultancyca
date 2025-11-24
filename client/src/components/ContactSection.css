@@ -1,0 +1,195 @@
+/* ContactSection.css */
+.contact-section {
+  background: #2a2a2a;
+  padding: clamp(3rem, 5vw, 4.5rem) clamp(1.5rem, 4vw, 3rem);
+  color: #fff;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.contact-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.contact-title {
+  font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+  font-weight: 700;
+  margin: 0 0 0.75rem;
+  color: #fff;
+}
+
+.contact-subtitle {
+  max-width: 900px;
+  margin: 0 auto clamp(2.5rem, 4vw, 3.5rem);
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.5;
+  font-size: clamp(0.95rem, 1.8vw, 1.1rem);
+}
+
+.offices-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  max-width: 1200px;
+  margin: 0 auto;
+  align-items: stretch;
+  padding: 0;
+}
+
+.office-card {
+  background: #1f1f1f;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: clamp(1.5rem, 3vw, 2rem);
+  text-align: left;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 0;
+  transition: all 0.3s ease;
+  cursor: default;
+  outline: none;
+}
+
+.office-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.office-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.office-flag-wrapper {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  border: none;
+  padding: 0;
+}
+
+.office-flag-wrapper--canada {
+  background: #d32f2f;
+}
+
+.office-flag-wrapper--usa {
+  background: #1976d2;
+}
+
+.office-flag-wrapper--india {
+  background: #ff9800;
+}
+
+.office-flag {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border: none !important;
+  outline: none !important;
+  padding: 0;
+  margin: 0;
+  box-shadow: none;
+}
+
+.office-card img {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none;
+}
+
+.office-title {
+  font-size: clamp(1.1rem, 2vw, 1.3rem);
+  font-weight: 700;
+  margin: 0;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.office-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex: 1;
+}
+
+.office-detail-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.office-icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.office-icon--green {
+  color: #4caf50;
+}
+
+.office-address,
+.office-phone {
+  font-size: clamp(0.9rem, 1.6vw, 1rem);
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.office-phone {
+  color: #ffffff;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.office-phone:hover {
+  color: #4caf50;
+  text-decoration: underline;
+}
+
+.office-email {
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  font-size: clamp(0.9rem, 1.6vw, 1rem);
+  line-height: 1.5;
+  transition: color 0.2s ease;
+}
+
+.office-email:hover {
+  color: #4caf50;
+  text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .offices-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .offices-grid {
+    grid-template-columns: 1fr;
+  }
+  .contact-title {
+    font-size: 28px;
+  }
+  .contact-subtitle {
+    font-size: 14px;
+  }
+}
