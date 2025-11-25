@@ -25,13 +25,23 @@ const AdminLogin = () => {
       const resp = await API.post("/auth/login", { email, password, userType: "admin" });
       const data = resp.data;
       
+      console.log("[AdminLogin] Login response:", data);
+      
       // Check if OTP is required
       if (data.requiresOTP) {
+        console.log("[AdminLogin] OTP required, showing OTP form");
+        console.log("[AdminLogin] Session ID:", data.sessionId);
+        if (data.debugOTP) {
+          console.log("[AdminLogin] DEBUG OTP (for testing):", data.debugOTP);
+        }
         setShowOTP(true);
         setSessionId(data.sessionId);
+        const messageText = data.debugOTP 
+          ? `OTP generated: ${data.debugOTP} (Email may have failed - check console)`
+          : "OTP has been sent to pareshlheru@venushiring.com. Please enter the OTP to complete login.";
         setMessage({ 
           type: "success", 
-          text: "OTP has been sent to pareshlheru@venushiring.com. Please enter the OTP to complete login." 
+          text: messageText
         });
       } else {
         // Non-admin user or OTP not required

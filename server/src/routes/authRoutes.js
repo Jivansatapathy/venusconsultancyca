@@ -60,15 +60,20 @@ router.post("/login", async (req, res) => {
     let user = await Admin.findByEmail(email);
     let userModel = "Admin";
     
+    console.log("[auth] Checking Admin model, user found:", !!user);
+    
     if (!user) {
       user = await Recruiter.findByEmail(email);
       userModel = "Recruiter";
+      console.log("[auth] Checking Recruiter model, user found:", !!user);
     }
 
     if (!user) {
       console.warn("[auth] user not found:", email);
       return res.status(401).json({ message: "Invalid credentials" });
     }
+    
+    console.log("[auth] User model determined:", userModel);
 
     // Compare password using the model's comparePassword method
     const ok = await Admin.comparePassword(password, user.password);
@@ -77,34 +82,67 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
+    // Debug: Log user details
+    console.log("[auth] User found:", { 
+      email: user.email, 
+      userModel, 
+      role: user.role,
+      hasRole: !!user.role 
+    });
+
     // If user is Admin, require OTP verification
-    if (userModel === "Admin" && user.role === "admin") {
+    // Check if userModel is Admin (all Admin model users should require OTP)
+    if (userModel === "Admin") {
       console.log("[auth] Admin login detected, sending OTP");
       
-      // Generate session ID and OTP
-      const sessionId = crypto.randomBytes(32).toString('hex');
-      const otp = storeOTP(email, sessionId);
-      
-      // Console log the OTP for debugging
-      console.log("[auth] Generated OTP:", otp);
-      console.log("[auth] OTP for email:", email);
-      
-      // Send OTP to pareshlheru@venushiring.com
-      const emailResult = await sendOTPEmail(otp, 'pareshlheru@venushiring.com');
-      
-      if (!emailResult.success) {
-        console.error("[auth] Failed to send OTP email:", emailResult.error);
-        return res.status(500).json({ message: "Failed to send OTP. Please try again." });
+      try {
+        // Generate session ID and OTP
+        const sessionId = crypto.randomBytes(32).toString('hex');
+        const otp = storeOTP(email, sessionId);
+        
+        // Console log the OTP for debugging
+        console.log("[auth] Generated OTP:", otp);
+        console.log("[auth] OTP for email:", email);
+        console.log("[auth] Session ID:", sessionId);
+        
+        // Send OTP to pareshlheru@venushiring.com
+        console.log("[auth] Attempting to send OTP email...");
+        const emailResult = await sendOTPEmail(otp, 'pareshlheru@venushiring.com');
+        console.log("[auth] Email result:", emailResult);
+        
+        if (!emailResult || !emailResult.success) {
+          console.error("[auth] Failed to send OTP email:", emailResult?.error || "Unknown error");
+          // Still return the OTP requirement so user can see it in console and test
+          return res.json({
+            requiresOTP: true,
+            sessionId,
+            message: "OTP has been generated. Check server console for OTP. Email sending may have failed.",
+            debugOTP: otp // Include OTP in response for debugging (remove in production)
+          });
+        }
+        
+        console.log("[auth] OTP sent successfully to pareshlheru@venushiring.com");
+        
+        // Return session ID (not access token yet)
+        return res.json({
+          requiresOTP: true,
+          sessionId,
+          message: "OTP has been sent to your email. Please verify to complete login."
+        });
+      } catch (emailError) {
+        console.error("[auth] Error in OTP sending process:", emailError);
+        console.error("[auth] Error stack:", emailError.stack);
+        // Generate OTP anyway for testing
+        const sessionId = crypto.randomBytes(32).toString('hex');
+        const otp = storeOTP(email, sessionId);
+        console.log("[auth] Generated OTP (email failed):", otp);
+        return res.json({
+          requiresOTP: true,
+          sessionId,
+          message: "OTP generation completed. Check server console for OTP.",
+          debugOTP: otp // Include OTP in response for debugging (remove in production)
+        });
       }
-      
-      console.log("[auth] OTP sent successfully to pareshlheru@venushiring.com");
-      
-      // Return session ID (not access token yet)
-      return res.json({
-        requiresOTP: true,
-        sessionId,
-        message: "OTP has been sent to your email. Please verify to complete login."
-      });
     }
 
     // For non-admin users (Recruiters), proceed with normal login
