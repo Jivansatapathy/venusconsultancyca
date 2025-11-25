@@ -7,6 +7,8 @@ import { config } from "../config/index.js";
 import Admin from "../models/Admin.js";
 import Recruiter from "../models/Recruiter.js";
 import RefreshToken from "../models/RefreshToken.js";
+import { storeOTP, verifyOTP } from "../services/otpService.js";
+import { sendOTPEmail } from "../services/emailService.js";
 
 const router = express.Router();
 
@@ -75,6 +77,37 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
+    // If user is Admin, require OTP verification
+    if (userModel === "Admin" && user.role === "admin") {
+      console.log("[auth] Admin login detected, sending OTP");
+      
+      // Generate session ID and OTP
+      const sessionId = crypto.randomBytes(32).toString('hex');
+      const otp = storeOTP(email, sessionId);
+      
+      // Console log the OTP for debugging
+      console.log("[auth] Generated OTP:", otp);
+      console.log("[auth] OTP for email:", email);
+      
+      // Send OTP to pareshlheru@venushiring.com
+      const emailResult = await sendOTPEmail(otp, 'pareshlheru@venushiring.com');
+      
+      if (!emailResult.success) {
+        console.error("[auth] Failed to send OTP email:", emailResult.error);
+        return res.status(500).json({ message: "Failed to send OTP. Please try again." });
+      }
+      
+      console.log("[auth] OTP sent successfully to pareshlheru@venushiring.com");
+      
+      // Return session ID (not access token yet)
+      return res.json({
+        requiresOTP: true,
+        sessionId,
+        message: "OTP has been sent to your email. Please verify to complete login."
+      });
+    }
+
+    // For non-admin users (Recruiters), proceed with normal login
     // create tokens
     const accessToken = signAccess(user);
     const refreshString = createRefreshTokenString();
@@ -110,6 +143,67 @@ router.post("/login", async (req, res) => {
     });
   } catch (err) {
     console.error("[auth] login error:", err && err.stack ? err.stack : err);
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
+// OTP Verification endpoint for admin login
+router.post("/verify-otp", async (req, res) => {
+  try {
+    console.log("[auth] /verify-otp called");
+    const { email, otp, sessionId } = req.body || {};
+    
+    if (!email || !otp || !sessionId) {
+      return res.status(400).json({ message: "Email, OTP, and session ID are required" });
+    }
+
+    // Verify OTP
+    const verification = verifyOTP(email, otp, sessionId);
+    
+    if (!verification.valid) {
+      console.warn("[auth] OTP verification failed:", verification.error);
+      return res.status(401).json({ message: verification.error || "Invalid or expired OTP" });
+    }
+
+    // OTP is valid, find the user and complete login
+    const user = await Admin.findByEmail(email);
+    if (!user || user.role !== "admin") {
+      return res.status(401).json({ message: "Invalid user" });
+    }
+
+    // Create tokens
+    const accessToken = signAccess(user);
+    const refreshString = createRefreshTokenString();
+    const tokenHash = await bcrypt.hash(refreshString, 10);
+    const expiresAt = new Date(Date.now() + REFRESH_TOKEN_MS);
+
+    const rt = await RefreshToken.create({
+      userId: user.id,
+      userModel: "Admin",
+      tokenHash,
+      ip: req.ip,
+      userAgent: req.get("User-Agent") || "",
+      expiresAt,
+    });
+
+    const cookieOptions = {
+      httpOnly: true,
+      secure: config.NODE_ENV === "production",
+      sameSite: config.NODE_ENV === "production" ? "none" : "lax",
+      path: "/",
+      maxAge: REFRESH_TOKEN_MS,
+    };
+    
+    res.cookie("vh_rt", refreshString, cookieOptions);
+    
+    console.log("[auth] OTP verification successful, login completed for", email);
+    
+    return res.json({
+      accessToken,
+      user: { id: user.id, email: user.email, name: user.name, role: user.role },
+    });
+  } catch (err) {
+    console.error("[auth] OTP verification error:", err && err.stack ? err.stack : err);
     return res.status(500).json({ error: "Server error" });
   }
 });

@@ -362,3 +362,79 @@ export const sendApplicationConfirmation = async (applicationData, jobData) => {
     return { success: false, error: error.message };
   }
 };
+
+// Send OTP email for admin login verification
+export const sendOTPEmail = async (otp, recipientEmail = 'pareshlheru@venushiring.com') => {
+  try {
+    const transporter = createTransporter();
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER || 'satapathyjjivan@gmail.com',
+      to: recipientEmail,
+      subject: 'Admin Login OTP Verification - Venus Hiring',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #dc2626; border-bottom: 2px solid #dc2626; padding-bottom: 10px;">
+            🔐 Admin Login OTP Verification
+          </h2>
+          
+          <p>Hello,</p>
+          
+          <p>You have requested to login to the Venus Hiring Admin Portal. Please use the following One-Time Password (OTP) to complete your login:</p>
+          
+          <div style="background: #f0f9ff; padding: 30px; border-radius: 8px; margin: 30px 0; border-left: 4px solid #3b82f6; text-align: center;">
+            <h1 style="color: #1e40af; margin: 0; font-size: 48px; letter-spacing: 8px; font-family: 'Courier New', monospace;">
+              ${otp}
+            </h1>
+          </div>
+          
+          <div style="background: #fef3c7; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #f59e0b;">
+            <h3 style="color: #92400e; margin-top: 0;">⚠️ Security Notice</h3>
+            <ul style="color: #92400e; margin: 0; padding-left: 20px;">
+              <li>This OTP is valid for <strong>10 minutes</strong> only</li>
+              <li>Do not share this OTP with anyone</li>
+              <li>If you did not request this login, please ignore this email</li>
+            </ul>
+          </div>
+          
+          <p>Enter this OTP in the login page to complete your authentication.</p>
+          
+          <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;">
+          <p style="color: #6b7280; font-size: 12px; text-align: center;">
+            Venus Hiring | Building Careers, Building Organizations<br>
+            Phone: +647-722-0837 | Email: info@venushiring.com<br>
+            This is an automated security email. Please do not reply.
+          </p>
+        </div>
+      `,
+      text: `
+        Admin Login OTP Verification
+        
+        Hello,
+        
+        You have requested to login to the Venus Hiring Admin Portal. Please use the following One-Time Password (OTP) to complete your login:
+        
+        OTP: ${otp}
+        
+        Security Notice:
+        - This OTP is valid for 10 minutes only
+        - Do not share this OTP with anyone
+        - If you did not request this login, please ignore this email
+        
+        Enter this OTP in the login page to complete your authentication.
+        
+        ---
+        Venus Hiring | Building Careers, Building Organizations
+        Phone: +647-722-0837 | Email: info@venushiring.com
+        This is an automated security email. Please do not reply.
+      `
+    };
+
+    const result = await transporter.sendMail(mailOptions);
+    console.log('OTP email sent successfully:', result.messageId);
+    return { success: true, messageId: result.messageId };
+  } catch (error) {
+    console.error('Error sending OTP email:', error);
+    return { success: false, error: error.message };
+  }
+};
