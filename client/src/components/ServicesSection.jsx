@@ -16,11 +16,11 @@ const ServicesSection = () => {
   // Map services to match the image layout with categories
   const serviceCategories = [
     { category: "Staffing", icon: "📋" },
-    { category: "IT Advisory", icon: "💼" },
+    { category: "Contract", icon: "💼" },
+    { category: "HR Advisory", icon: "📊" },
+    { category: "Project", icon: "📝" },
     { category: "Startup", icon: "🚀" },
-    { category: "Staffing", icon: "📝" },
-    { category: "Leadership", icon: "👔" },
-    { category: "Solutions", icon: "🎯" }
+    { category: "Executive", icon: "👔" }
   ];
 
   // Ensure we have 6 items (duplicate or add if needed)

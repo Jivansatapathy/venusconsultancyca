@@ -45,6 +45,14 @@ const services = {
           "Specialized recruitment solutions for startups and growing companies, connecting them with innovative talent ready to scale.",
         image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=600&fit=crop&auto=format",
         link: "/contact"
+      },
+      {
+        key: "executive-search",
+        title: "Executive Search & Leadership",
+        excerpt:
+          "Identifying and placing C-suite executives and senior leadership talent to drive organizational transformation and growth.",
+        image: "https://images.unsplash.com/photo-1556761175-4b46a572b786?w=800&h=600&fit=crop&auto=format",
+        link: "/contact"
       }
     ]
   };
