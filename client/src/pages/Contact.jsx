@@ -15,8 +15,8 @@ const offices = [
     title: "India",
     flag: "https://flagcdn.com/w40/in.png",
     flagWrapperClass: "office-flag-wrapper--india",
-    address: "Serving clients across India",
-    phones: ["+91-XXXXXXXXXX"]
+    address: "Mumbai, Surat, Chennai, Hyderabad",
+    phones: ["+91-261-2601177", "+91-261-391177"]
   },
   {
     title: "Canada",

@@ -1,5 +1,6 @@
 // client/src/components/FAQ.jsx
 import React, { useState } from "react";
+import { ChevronDown } from "lucide-react";
 import "./FAQ.css";
 
 const FAQ = () => {
@@ -7,36 +8,44 @@ const FAQ = () => {
 
   const faqs = [
     {
-      question: "What areas in Canada does Venus Hiring serve?",
-      answer: "Venus Hiring serves businesses and professionals across all of Canada, from coast to coast. Our headquarters in Toronto allows us to effectively serve major cities including Vancouver, Montreal, Calgary, Ottawa, Edmonton, Winnipeg, Halifax, and beyond. We have deep knowledge of the Canadian job market and can help with placements in any province or territory."
+      question: "What services does Venus Consultancy offer?",
+      answer: "Venus Consultancy provides comprehensive recruitment and talent solutions including IT recruitment, engineering placements, skilled trades, executive search, recruitment process outsourcing (RPO), and end-to-end talent acquisition services across various industries."
     },
     {
-      question: "Do you help with work permits and immigration for international candidates?",
-      answer: "Yes, we assist Canadian employers in navigating the immigration process for international talent. While we're not immigration lawyers, we work closely with immigration consultants and can guide you through the LMIA (Labour Market Impact Assessment) process, work permit applications, and permanent residency pathways. Our team understands Canadian immigration requirements and can help connect you with qualified candidates who are eligible to work in Canada."
+      question: "How do I apply for a job?",
+      answer: "You can browse available positions on our Find Jobs page, use the search and filter options to find roles that match your skills, and click 'Apply Now' on any job listing. You'll need to provide your contact information, upload your resume, and optionally include a cover message."
     },
     {
-      question: "What industries do you specialize in within the Canadian market?",
-      answer: "We specialize in recruiting for a wide range of industries across Canada, including Technology, Healthcare, Finance, Engineering, Skilled Trades, Manufacturing, Retail, and Professional Services. Our expertise spans from entry-level positions to C-suite executive roles, with particular strength in sectors that are thriving in major Canadian cities like Toronto, Vancouver, and Montreal."
+      question: "What industries do you recruit for?",
+      answer: "We specialize in IT, Engineering, Scientific Research, Skilled Trades, Light Industrial, Office & Clerical, Technical Support, and Executive/Board-level positions. We serve clients across multiple sectors including technology, manufacturing, finance, healthcare, and more."
     },
     {
-      question: "How does your recruitment process work for Canadian companies?",
-      answer: "Our process is tailored to the Canadian market. We begin by understanding your specific needs, company culture, and the Canadian market context. We then source candidates from our extensive network across Canada, screen them thoroughly, and present you with qualified shortlists. We handle everything from initial interviews to reference checks, ensuring candidates understand Canadian workplace expectations and are ready to contribute to your team."
+      question: "How long does the recruitment process take?",
+      answer: "The timeline varies depending on the role and client requirements. Typically, initial screening takes 1-2 business days, followed by client review and interviews. The entire process from application to job offer can range from 1-4 weeks, depending on the position level and urgency."
     },
     {
-      question: "What makes Venus Hiring different from other Canadian recruitment agencies?",
-      answer: "As a Toronto-based firm with deep roots across Canada, we combine local market knowledge with modern recruitment technology. We understand the unique dynamics of the Canadian job market, including regional differences, bilingual requirements (English/French), and Canadian workplace culture. Our personalized approach, combined with our extensive network of Canadian professionals, allows us to make better matches faster."
+      question: "Do you charge candidates any fees?",
+      answer: "No, our services are completely free for job seekers. All recruitment fees are paid by the hiring companies. We never charge candidates for job placement, resume reviews, or career counseling services."
     },
     {
-      question: "Do you help candidates relocate within Canada?",
-      answer: "Yes, we assist candidates with relocations across Canada. Whether you're moving from Vancouver to Toronto, Montreal to Calgary, or any other Canadian city, we can help connect you with opportunities and provide guidance on the relocation process. Many of our clients value candidates who are willing to relocate within Canada, and we facilitate these transitions."
+      question: "What should I include in my resume?",
+      answer: "Your resume should include: contact information, professional summary, work experience with dates and responsibilities, education and certifications, relevant skills, and any notable achievements. Keep it concise (1-2 pages) and tailored to the position you're applying for."
     },
     {
-      question: "What are your fees for Canadian employers?",
-      answer: "Our fee structure is competitive and transparent, tailored to the Canadian market. Fees are typically based on a percentage of the candidate's first-year salary and vary depending on the role level and industry. We offer flexible payment terms and only charge fees when we successfully place a candidate. Contact us for a customized quote based on your specific hiring needs."
+      question: "How can employers post job openings?",
+      answer: "Employers can contact us through our Contact page or Hiring page to discuss their recruitment needs. We offer various packages including single position hiring, bulk recruitment, and RPO services. You can also reach out via WhatsApp or email to speak with our recruitment team."
     },
     {
-      question: "How quickly can you fill positions for Canadian companies?",
-      answer: "Our average time-to-fill varies by role and industry, but we typically present qualified candidates within 1-2 weeks of engagement. For urgent positions, we can expedite the process. Our deep network of Canadian professionals and understanding of the local market allows us to move quickly while maintaining quality standards."
+      question: "What makes Venus Consultancy different from other recruitment agencies?",
+      answer: "We combine human-centered approach with data-driven insights, ensuring both technical fit and cultural alignment. Our team has extensive experience across multiple industries, and we maintain strong relationships with both candidates and employers. We also provide comprehensive support throughout the entire hiring process."
+    },
+    {
+      question: "Do you help with visa sponsorship or international placements?",
+      answer: "Yes, we assist with international placements and can guide candidates through visa sponsorship processes when working with employers who offer such opportunities. We primarily work with clients across Canada, helping both Canadian employers and international candidates navigate the Canadian job market and immigration processes."
+    },
+    {
+      question: "How do I prepare for an interview?",
+      answer: "Research the company and role thoroughly, prepare examples of your achievements using the STAR method (Situation, Task, Action, Result), prepare thoughtful questions to ask the interviewer, dress professionally, and arrive on time (or log in early for virtual interviews). Our team can also provide interview preparation tips upon request."
     }
   ];
 
@@ -45,30 +54,36 @@ const FAQ = () => {
   };
 
   return (
-    <section className="faq-section" aria-labelledby="faq-heading">
+    <section className="faq-section" aria-label="Frequently Asked Questions">
       <div className="faq-container">
         <div className="faq-header">
-          <h2 id="faq-heading" className="faq-title">Frequently Asked Questions</h2>
-          <p className="faq-subtitle">Everything you need to know about working with Venus Hiring in Canada</p>
+          <h2 className="faq-title">Frequently Asked Questions</h2>
+          <p className="faq-subtitle">
+            Find answers to common questions about our services, job applications, and recruitment process
+          </p>
         </div>
         
         <div className="faq-list">
           {faqs.map((faq, index) => (
-            <div key={index} className="faq-item">
+            <div 
+              key={index} 
+              className={`faq-item ${openIndex === index ? 'faq-item--open' : ''}`}
+            >
               <button
-                className={`faq-question ${openIndex === index ? 'active' : ''}`}
+                className="faq-question"
                 onClick={() => toggleFAQ(index)}
                 aria-expanded={openIndex === index}
                 aria-controls={`faq-answer-${index}`}
               >
                 <span className="faq-question-text">{faq.question}</span>
-                <span className="faq-icon" aria-hidden="true">
-                  {openIndex === index ? '−' : '+'}
-                </span>
+                <ChevronDown 
+                  className={`faq-icon ${openIndex === index ? 'faq-icon--open' : ''}`}
+                  size={20}
+                />
               </button>
               <div
                 id={`faq-answer-${index}`}
-                className={`faq-answer ${openIndex === index ? 'open' : ''}`}
+                className={`faq-answer ${openIndex === index ? 'faq-answer--open' : ''}`}
                 aria-hidden={openIndex !== index}
               >
                 <p className="faq-answer-text">{faq.answer}</p>
@@ -82,4 +97,3 @@ const FAQ = () => {
 };
 
 export default FAQ;
-

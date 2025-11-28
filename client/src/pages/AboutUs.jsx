@@ -1,6 +1,8 @@
 // client/src/pages/AboutUs.jsx
 import React from "react";
 import { Link } from 'react-router-dom';
+import TransformSection from "../components/TransformSection";
+import FAQ from "../components/FAQ";
 import "./AboutUs.css";
 
 const AboutUs = () => {
@@ -26,8 +28,8 @@ const AboutUs = () => {
               <h1 className="about-hero-title">
                 The most loved <span className="about-hero-title-highlight">Agency</span>
               </h1>
-              <p className="about-hero-description">
-                We connect ambitious teams across the USA and beyond with the right talent to build the future—faster and with confidence. Our mission drives everything we do.
+                  <p className="about-hero-description">
+                We connect ambitious teams across Canada and beyond with the right talent to build the future—faster and with confidence. Our mission drives everything we do.
               </p>
               
               {/* Feature Cards Grid */}
@@ -125,9 +127,9 @@ const AboutUs = () => {
                 </svg>
               </div>
               <span className="mission-vision-card-tag">Vision</span>
-              <h3 className="mission-vision-card-title">Global leadership in talent</h3>
+              <h3 className="mission-vision-card-title">Canadian leadership in talent</h3>
               <p className="mission-vision-card-description">
-                To become the global leader in scientific talent acquisition, setting new standards for precision and impact.
+                To become the leading Canadian firm in scientific talent acquisition, setting new standards for precision and impact across Canada.
               </p>
             </div>
 
@@ -255,13 +257,12 @@ const AboutUs = () => {
                     Sourcing top-tier tech talent from software engineers to cybersecurity experts
                   </p>
                   <div className="industries-card-ctas">
-                    <a href="#tech-roles" className="industries-cta-primary">View roles</a>
-                    <a href="#tech-explore" className="industries-cta-link">
+                    <Link to="/services" className="industries-cta-link">
                       Explore
                       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -340,13 +341,12 @@ const AboutUs = () => {
                     Identifying transformative leaders who drive organizational excellence
                   </p>
                   <div className="industries-card-ctas">
-                    <a href="#leadership-roles" className="industries-cta-primary">View opportunities</a>
-                    <a href="#leadership-explore" className="industries-cta-link">
+                    <Link to="/services" className="industries-cta-link">
                       Explore
                       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -377,11 +377,8 @@ const AboutUs = () => {
             </div>
 
             <div className="ai-platform-images-column">
-              <div className="ai-platform-image-large">
-                <img src="/aboutus/aboutus5.png" alt="AI-powered talent discovery" />
-              </div>
-              <div className="ai-platform-image-small">
-                <img src="/aboutus/aboutus2.png" alt="Collaborative workspace" />
+              <div className="ai-platform-image-wrapper">
+                <img src="/slider/laptopjob.jpg" alt="AI-powered talent discovery" />
               </div>
             </div>
           </div>
@@ -398,7 +395,7 @@ const AboutUs = () => {
           <div className="our-impact-grid">
             <div className="our-impact-image-column">
               <div className="our-impact-image-card">
-                <img src="/aboutus/aboutus6.png" alt="Our Impact" />
+                <img src="/gallery/Venus Consultancy at Job-fair event.jpg" alt="Our Impact" />
               </div>
             </div>
 
@@ -458,7 +455,7 @@ const AboutUs = () => {
               </div>
 
               <div className="our-impact-ctas">
-                <a href="#learn" className="our-impact-btn-learn">Learn</a>
+                <Link to="/contact" className="our-impact-btn-learn">Connect</Link>
                 <a href="#insights" className="our-impact-link-insights">
                   Insights
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -482,13 +479,7 @@ const AboutUs = () => {
                 Quantitative insights reveal the power of intelligent talent acquisition across industries.
               </p>
               <div className="performance-ctas">
-                <a href="#analyze" className="performance-btn-analyze">Analyze</a>
-                <a href="#details" className="performance-link-details">
-                  Details
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </a>
+                <Link to="/book-call" className="performance-btn-analyze">Book a call</Link>
               </div>
             </div>
 
@@ -515,6 +506,12 @@ const AboutUs = () => {
           </div>
         </div>
       </section>
+
+      {/* Transform Section */}
+      <TransformSection />
+
+      {/* FAQ Section */}
+      <FAQ />
 
     </main>
   );

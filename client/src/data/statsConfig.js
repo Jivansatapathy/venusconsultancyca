@@ -21,9 +21,9 @@ export const STATS = [
       key: "consultants",
       value: 100,
       suffix: "+",
-      label: "Global clients",
+      label: "Canadian clients",
       icon: "briefcase",
-      tooltip: "Trusted by 100+ clients worldwide",
+      tooltip: "Trusted by 100+ clients across Canada",
     },
   ];
   

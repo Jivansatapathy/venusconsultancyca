@@ -4,11 +4,11 @@
 const services = {
     heading: "Our Services",
     description:
-      "We provide tailored hiring and advisory services to help organisations build strong teams and leadership.",
+      "Strategic recruitment and advisory services designed to help organizations build exceptional teams and drive sustainable growth.",
     items: [
       {
         key: "permanent-staffing",
-        title: "Permanent Staffing",
+        title: "Solutions",
         excerpt:
           "Connecting organizations with full-time professionals across technology, engineering, corporate, and skilled trades.",
         image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=600&fit=crop&auto=format",
@@ -47,15 +47,14 @@ const services = {
         link: "/contact"
       },
       {
-        key: "executive-search",
-        title: "Executive Search & Leadership",
+        key: "talent-consulting",
+        title: "Talent Consulting & Advisory",
         excerpt:
-          "Identifying and placing C-suite executives and senior leadership talent to drive organizational transformation and growth.",
-        image: "https://images.unsplash.com/photo-1556761175-4b46a572b786?w=800&h=600&fit=crop&auto=format",
+          "Strategic talent consulting services to help organizations optimize their hiring processes, build talent pipelines, and develop effective recruitment strategies.",
+        image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&h=600&fit=crop&auto=format",
         link: "/contact"
       }
     ]
   };
   
   export default services;
-  

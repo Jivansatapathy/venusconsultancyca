@@ -54,7 +54,19 @@ function AppContent() {
 
   // Scroll to top on route change
   useEffect(() => {
-    window.scrollTo(0, 0);
+    const scrollToTop = () => {
+      if ('scrollBehavior' in document.documentElement.style) {
+        window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+      } else {
+        window.scrollTo(0, 0);
+      }
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    };
+    
+    scrollToTop();
+    const timeoutId = setTimeout(scrollToTop, 150);
+    return () => clearTimeout(timeoutId);
   }, [location]);
 
   return (

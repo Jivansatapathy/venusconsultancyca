@@ -1,32 +1,38 @@
 /* FAQ.css */
 .faq-section {
-  padding: 4rem 0;
-  background: #ffffff;
+  background: #1a1a1a;
+  padding: clamp(4rem, 6vw, 6rem) 0;
+  position: relative;
+  overflow: hidden;
 }
 
 .faq-container {
   max-width: 900px;
   margin: 0 auto;
-  padding: 0 1.5rem;
+  padding: 0 clamp(1.5rem, 4vw, 2rem);
 }
 
 .faq-header {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: clamp(3rem, 5vw, 4rem);
 }
 
 .faq-title {
-  font-size: clamp(2rem, 4vw, 2.5rem);
+  font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 700;
-  color: #111;
-  margin: 0 0 1rem;
+  color: #ffffff;
+  margin: 0 0 1rem 0;
+  line-height: 1.2;
 }
 
 .faq-subtitle {
-  font-size: clamp(1rem, 2vw, 1.1rem);
-  color: #666;
+  font-size: clamp(1rem, 1.8vw, 1.15rem);
+  color: rgba(255, 255, 255, 0.7);
   margin: 0;
   line-height: 1.6;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .faq-list {
@@ -36,21 +42,26 @@
 }
 
 .faq-item {
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: #252525;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   overflow: hidden;
   transition: all 0.3s ease;
 }
 
 .faq-item:hover {
-  border-color: #d1d5db;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.faq-item--open {
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
 .faq-question {
   width: 100%;
-  padding: 1.5rem;
+  padding: clamp(1.25rem, 2.5vw, 1.5rem) clamp(1.5rem, 3vw, 2rem);
   background: transparent;
   border: none;
   text-align: left;
@@ -58,85 +69,90 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 1rem;
-  transition: background-color 0.2s ease;
+  gap: 1.5rem;
+  color: #ffffff;
+  font-size: clamp(1rem, 1.8vw, 1.1rem);
+  font-weight: 600;
+  transition: all 0.3s ease;
 }
 
 .faq-question:hover {
-  background-color: #f9fafb;
+  color: #ffffff;
 }
 
-.faq-question.active {
-  background-color: #f3f4f6;
+.faq-question:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: -2px;
+  border-radius: 12px;
 }
 
 .faq-question-text {
-  font-size: clamp(1rem, 1.8vw, 1.1rem);
-  font-weight: 600;
-  color: #111;
-  line-height: 1.5;
   flex: 1;
+  line-height: 1.5;
 }
 
 .faq-icon {
-  font-size: 1.5rem;
-  font-weight: 300;
-  color: #e50914;
-  flex-shrink: 0;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: rgba(229, 9, 20, 0.1);
+  color: rgba(255, 255, 255, 0.6);
   transition: transform 0.3s ease;
+  flex-shrink: 0;
 }
 
-.faq-question.active .faq-icon {
+.faq-icon--open {
   transform: rotate(180deg);
-  background: rgba(229, 9, 20, 0.15);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .faq-answer {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.3s ease, padding 0.3s ease;
-  padding: 0 1.5rem;
+  transition: max-height 0.4s ease, padding 0.4s ease;
+  background: #1f1f1f;
 }
 
-.faq-answer.open {
-  max-height: 1000px;
-  padding: 0 1.5rem 1.5rem;
+.faq-answer--open {
+  max-height: 500px;
+  padding: 0 clamp(1.5rem, 3vw, 2rem) clamp(1.5rem, 2.5vw, 2rem);
 }
 
 .faq-answer-text {
-  font-size: clamp(0.95rem, 1.6vw, 1rem);
-  color: #555;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: clamp(0.95rem, 1.6vw, 1.05rem);
   line-height: 1.7;
   margin: 0;
+  padding-top: 0.5rem;
 }
 
-/* Responsive */
+/* Responsive adjustments */
 @media (max-width: 768px) {
+  .faq-question {
+    padding: 1.25rem 1.25rem;
+    gap: 1rem;
+  }
+
+  .faq-answer--open {
+    padding: 0 1.25rem 1.5rem;
+  }
+
+  .faq-list {
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
   .faq-section {
     padding: 3rem 0;
   }
-  
-  .faq-container {
-    padding: 0 1rem;
-  }
-  
+
   .faq-header {
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
   }
-  
+
   .faq-question {
-    padding: 1.25rem;
+    font-size: 0.95rem;
+    padding: 1rem;
   }
-  
-  .faq-answer.open {
-    padding: 0 1.25rem 1.25rem;
+
+  .faq-answer-text {
+    font-size: 0.9rem;
   }
 }
-

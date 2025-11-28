@@ -8,8 +8,8 @@ const whyStats = {
     },
     right: [
       {
-        value: "Worldwide",
-        caption: "Trusted by companies worldwide"
+        value: "Canada-wide",
+        caption: "Trusted by companies across Canada"
       },
       {
         value: "500+",

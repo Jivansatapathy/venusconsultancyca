@@ -1,6 +1,6 @@
 // client/src/pages/Home.jsx
 import React, { Suspense, lazy } from "react";
-import Hero from "../components/ThirdHero";
+import Hero from "../components/NewHero";
 import ScrollingBanner from "../components/ScrollingBanner";
 import StatAbout from "../components/StatAbout";
 
