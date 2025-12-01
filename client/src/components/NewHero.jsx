@@ -76,15 +76,12 @@ const NewHero = () => {
 
   // Mobile slider with Gallery images only (using confirmed existing images)
   const mobileSliderImages = [
-    '/gallery/Great Meeting With the 22nd Prime Minister of Canada Stephen Harper.jpg',
-    '/gallery/Great meeting with the Governor of the Bank of Canada, Tiff Macklem.jpg',
     '/gallery/Team Venus at US thanks giving dinner at AMCHAM Gala Event.jpg',
     '/gallery/Team venus at Stellantis Headquarter Michigan.jpg',
     '/gallery/Ontario Business Network Event with Venus Consultancy and Venus Global tech.jpg',
     '/gallery/Panel Discussion with teh TD Bank, Scotia Bank.jpg',
     '/gallery/Team Venus helping at Community Job fair.jpg',
     '/gallery/Venus Consultancy at Job-fair event.jpg',
-    '/gallery/Venus Consultancy at Toronto Police Booth.jpg',
     '/gallery/Sharing the Pizza with Team.jpg'
   ];
 
