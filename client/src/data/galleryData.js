@@ -9,15 +9,15 @@
 // - orientation: "landscape" or "portrait" (will be auto-detected, but you can set it manually)
 
 export const galleryData = [
-  {
-    id: 1,
-    image: "/gallery/At Canadian Embassy Washington DC.jpg",
-    eventName: "At Canadian Embassy Washington DC",
-    location: "Ottawa, Canada",
-    description: "Important diplomatic meeting to discuss talent mobility and business relations across Canada, supporting Canadian businesses with strategic talent solutions.",
-    attendees: "Venus Consultancy team at diplomatic meeting",
-    orientation: "landscape"
-  },
+  // {
+  //   id: 1,
+  //   image: "/gallery/At Canadian Embassy Washington DC.jpg",
+  //   eventName: "At Canadian Embassy Washington DC",
+  //   location: "Ottawa, Canada",
+  //   description: "Important diplomatic meeting to discuss talent mobility and business relations across Canada, supporting Canadian businesses with strategic talent solutions.",
+  //   attendees: "Venus Consultancy team at diplomatic meeting",
+  //   orientation: "landscape"
+  // },
   // {
   //   id: 2,
   //   image: "/gallery/Great Meeting With the 22nd Prime Minister of Canada Stephen Harper.jpg",
