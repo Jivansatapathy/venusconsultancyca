@@ -24,6 +24,7 @@ import bookingRoutes from "./routes/bookingRoutes.js";
 import healthRoutes from "./routes/healthRoutes.js";
 import seoRoutes from "./routes/seoRoutes.js";
 import blogRoutes from "./routes/blogRoutes.js";
+import youtubeRoutes from "./routes/youtubeRoutes.js";
 import connectDB from "./config/db.js";
 
 const app = express();
@@ -126,6 +127,7 @@ app.use("/api/bookings", bookingRoutes);
 app.use("/api/health", healthRoutes);
 app.use("/api/seo", seoRoutes);
 app.use("/api/blogs", blogRoutes);
+app.use("/api/youtube", youtubeRoutes);
 
 // ---- Serve Frontend (guarded) ----
 import fs from "fs";

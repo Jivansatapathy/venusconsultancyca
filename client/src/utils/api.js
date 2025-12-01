@@ -44,7 +44,7 @@ function processQueue(err, token = null) {
 // Backend API URL - Cloud Run deployment
 const getApiUrl = () => {
   // Use Cloud Run backend URL
-  return "https://venus-backend-canada-841304788329.us-central1.run.app";
+  return "https://venus-backend-ca-841304788329.us-central1.run.app";
 };
 
 const API_URL = getApiUrl();

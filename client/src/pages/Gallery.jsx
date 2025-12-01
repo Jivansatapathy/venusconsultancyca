@@ -1,11 +1,57 @@
 // client/src/pages/Gallery.jsx
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import "./Gallery.css";
 import { galleryData } from "../data/galleryData";
+import API from "../utils/api";
 
 const Gallery = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [imageOrientations, setImageOrientations] = useState({});
+  const [youtubeVideos, setYoutubeVideos] = useState([]);
+  const [loadingVideos, setLoadingVideos] = useState(false);
+  const [videoError, setVideoError] = useState(null);
+
+  // YouTube Channel ID - Set this in your environment or config
+  const YOUTUBE_CHANNEL_ID = import.meta.env.VITE_YOUTUBE_CHANNEL_ID || "";
+
+  // Fetch YouTube videos
+  const fetchYouTubeVideos = async () => {
+    if (!YOUTUBE_CHANNEL_ID) {
+      console.warn("YouTube Channel ID not configured. Set VITE_YOUTUBE_CHANNEL_ID in environment variables.");
+      return;
+    }
+
+    setLoadingVideos(true);
+    setVideoError(null);
+    try {
+      const response = await API.get(`/youtube/videos`, {
+        params: {
+          channelId: YOUTUBE_CHANNEL_ID,
+          maxResults: 50,
+        },
+      });
+      if (response.data.success) {
+        setYoutubeVideos(response.data.videos || []);
+      }
+    } catch (error) {
+      console.error("Error fetching YouTube videos:", error);
+      setVideoError(error.response?.data?.error || "Failed to load videos");
+    } finally {
+      setLoadingVideos(false);
+    }
+  };
+
+  // Fetch videos on component mount and set up auto-refresh
+  useEffect(() => {
+    fetchYouTubeVideos();
+
+    // Auto-refresh videos every 5 minutes to get new uploads
+    const refreshInterval = setInterval(() => {
+      fetchYouTubeVideos();
+    }, 5 * 60 * 1000); // 5 minutes
+
+    return () => clearInterval(refreshInterval);
+  }, [YOUTUBE_CHANNEL_ID]);
 
   // Detect image orientation when image loads
   const handleImageLoad = (itemId, event) => {
@@ -17,8 +63,8 @@ const Gallery = () => {
     }));
   };
 
-  const openModal = (item) => {
-    setSelectedImage(item);
+  const openModal = (item, isVideo = false) => {
+    setSelectedImage({ ...item, isVideo });
     document.body.style.overflow = "hidden"; // Prevent background scrolling
   };
 
@@ -39,10 +85,12 @@ const Gallery = () => {
   }, [selectedImage]);
 
   // Separate gallery items into landscape and portrait
-  const { landscapeItems, portraitItems } = useMemo(() => {
+  const { landscapeItems, portraitItems, videoItems } = useMemo(() => {
     const landscape = [];
     const portrait = [];
+    const videos = [];
     
+    // Process image gallery items
     galleryData.forEach((item) => {
       // Use detected orientation or fallback to item.orientation
       const detectedOrientation = imageOrientations[item.id] || item.orientation;
@@ -54,9 +102,18 @@ const Gallery = () => {
         landscape.push(itemWithOrientation);
       }
     });
+
+    // Process YouTube videos (all videos are treated as landscape for display)
+    youtubeVideos.forEach((video) => {
+      videos.push({
+        ...video,
+        currentOrientation: "landscape",
+        isVideo: true,
+      });
+    });
     
-    return { landscapeItems: landscape, portraitItems: portrait };
-  }, [imageOrientations]);
+    return { landscapeItems: landscape, portraitItems: portrait, videoItems: videos };
+  }, [imageOrientations, youtubeVideos]);
 
   return (
     <main className="gallery-page">
@@ -67,12 +124,73 @@ const Gallery = () => {
           <p className="gallery-hero__subtitle">
             Capturing moments from our events, meetings, and networking sessions
           </p>
+          {YOUTUBE_CHANNEL_ID && (
+            <button 
+              className="gallery-refresh-btn"
+              onClick={fetchYouTubeVideos}
+              disabled={loadingVideos}
+              title="Refresh videos"
+            >
+              {loadingVideos ? "Refreshing..." : "🔄 Refresh Videos"}
+            </button>
+          )}
         </div>
       </section>
 
       {/* Gallery Grid */}
       <section className="gallery-section">
         <div className="gallery-container">
+          {/* YouTube Videos Section */}
+          {videoItems.length > 0 && (
+            <div className="gallery-videos-section">
+              <h2 className="gallery-section-title">Our Videos</h2>
+              {videoError && (
+                <div className="gallery-error-message">
+                  {videoError}
+                </div>
+              )}
+              <div className="gallery-grid gallery-grid--videos">
+                {videoItems.map((video) => (
+                  <div
+                    key={video.id}
+                    className="gallery-item gallery-item--video gallery-item--landscape"
+                    onClick={() => openModal(video, true)}
+                  >
+                    <div className="gallery-item__image-wrapper">
+                      <img
+                        src={video.thumbnail}
+                        alt={video.title}
+                        className="gallery-item__image"
+                        loading="lazy"
+                      />
+                      <div className="gallery-item__video-overlay">
+                        <div className="gallery-item__play-button">
+                          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="32" cy="32" r="32" fill="rgba(0, 0, 0, 0.6)"/>
+                            <path d="M26 20L44 32L26 44V20Z" fill="white"/>
+                          </svg>
+                        </div>
+                      </div>
+                      <div className="gallery-item__overlay">
+                        <div className="gallery-item__info">
+                          <h3 className="gallery-item__title">{video.title}</h3>
+                          <div className="gallery-item__video-meta">
+                            <span className="gallery-item__video-views">
+                              {parseInt(video.viewCount).toLocaleString()} views
+                            </span>
+                            <span className="gallery-item__video-date">
+                              {new Date(video.publishedAt).toLocaleDateString()}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Landscape Images Section */}
           {landscapeItems.length > 0 && (
             <div className="gallery-grid">
@@ -156,34 +274,85 @@ const Gallery = () => {
             >
               ×
             </button>
-            <div className="gallery-modal__body">
-              <div className={`gallery-modal__image-wrapper gallery-modal__image-wrapper--${selectedImage.orientation}`}>
-                <img
-                  src={encodeURI(selectedImage.image)}
-                  alt={selectedImage.eventName}
-                  className="gallery-modal__image"
-                  onError={(e) => {
-                    e.target.src = '/venuslogo.png'; // Fallback image
-                    e.target.alt = 'Image not available';
-                  }}
-                />
-              </div>
-              <div className="gallery-modal__details">
-                <h2 className="gallery-modal__title">{selectedImage.eventName}</h2>
-                <div className="gallery-modal__meta">
-                  <div className="gallery-modal__meta-item">
-                    <span className="gallery-modal__meta-label">Location:</span>
-                    <span className="gallery-modal__meta-value">{selectedImage.location}</span>
+            <div className={`gallery-modal__body ${selectedImage.isVideo ? 'gallery-modal__body--video' : ''}`}>
+              {selectedImage.isVideo ? (
+                <>
+                  <div className="gallery-modal__video-wrapper">
+                    <iframe
+                      src={selectedImage.embedUrl}
+                      title={selectedImage.title}
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="gallery-modal__video"
+                    ></iframe>
                   </div>
-                </div>
-                <div className="gallery-modal__description">
-                  <p>{selectedImage.description}</p>
-                </div>
-                <div className="gallery-modal__attendees">
-                  <h3 className="gallery-modal__attendees-title">Meeting Details:</h3>
-                  <p className="gallery-modal__attendees-text">{selectedImage.attendees}</p>
-                </div>
-              </div>
+                  <div className="gallery-modal__details">
+                    <h2 className="gallery-modal__title">{selectedImage.title}</h2>
+                    <div className="gallery-modal__meta">
+                      <div className="gallery-modal__meta-item">
+                        <span className="gallery-modal__meta-label">Channel:</span>
+                        <span className="gallery-modal__meta-value">{selectedImage.channelTitle}</span>
+                      </div>
+                      <div className="gallery-modal__meta-item">
+                        <span className="gallery-modal__meta-label">Published:</span>
+                        <span className="gallery-modal__meta-value">
+                          {new Date(selectedImage.publishedAt).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <div className="gallery-modal__meta-item">
+                        <span className="gallery-modal__meta-label">Views:</span>
+                        <span className="gallery-modal__meta-value">
+                          {parseInt(selectedImage.viewCount).toLocaleString()}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="gallery-modal__description">
+                      <p>{selectedImage.description || "No description available."}</p>
+                    </div>
+                    <div className="gallery-modal__video-actions">
+                      <a
+                        href={selectedImage.watchUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="gallery-modal__watch-button"
+                      >
+                        Watch on YouTube
+                      </a>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className={`gallery-modal__image-wrapper gallery-modal__image-wrapper--${selectedImage.orientation}`}>
+                    <img
+                      src={encodeURI(selectedImage.image)}
+                      alt={selectedImage.eventName}
+                      className="gallery-modal__image"
+                      onError={(e) => {
+                        e.target.src = '/venuslogo.png'; // Fallback image
+                        e.target.alt = 'Image not available';
+                      }}
+                    />
+                  </div>
+                  <div className="gallery-modal__details">
+                    <h2 className="gallery-modal__title">{selectedImage.eventName}</h2>
+                    <div className="gallery-modal__meta">
+                      <div className="gallery-modal__meta-item">
+                        <span className="gallery-modal__meta-label">Location:</span>
+                        <span className="gallery-modal__meta-value">{selectedImage.location}</span>
+                      </div>
+                    </div>
+                    <div className="gallery-modal__description">
+                      <p>{selectedImage.description}</p>
+                    </div>
+                    <div className="gallery-modal__attendees">
+                      <h3 className="gallery-modal__attendees-title">Meeting Details:</h3>
+                      <p className="gallery-modal__attendees-text">{selectedImage.attendees}</p>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
