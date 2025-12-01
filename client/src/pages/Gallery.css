@@ -436,7 +436,10 @@
 
 /* YouTube Videos Section */
 .gallery-videos-section {
+  margin-top: 80px;
   margin-bottom: 60px;
+  padding-top: 60px;
+  border-top: 2px solid #e5e7eb;
 }
 
 .gallery-section-title {
