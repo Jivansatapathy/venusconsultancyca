@@ -447,28 +447,6 @@
   text-align: center;
 }
 
-.gallery-refresh-btn {
-  margin-top: 16px;
-  padding: 10px 20px;
-  background: rgba(255, 255, 255, 0.2);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  color: #ffffff;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  transition: all 0.3s ease;
-}
-
-.gallery-refresh-btn:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.3);
-  border-color: rgba(255, 255, 255, 0.5);
-}
-
-.gallery-refresh-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
 
 .gallery-error-message {
   background: #fee;
@@ -614,11 +592,6 @@
   .gallery-section-title {
     font-size: 24px;
     margin-bottom: 24px;
-  }
-
-  .gallery-refresh-btn {
-    padding: 8px 16px;
-    font-size: 12px;
   }
 
   .gallery-item__play-button svg {

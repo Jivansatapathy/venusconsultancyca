@@ -11,34 +11,26 @@ const Gallery = () => {
   const [loadingVideos, setLoadingVideos] = useState(false);
   const [videoError, setVideoError] = useState(null);
 
-  // YouTube Channel ID or Handle - Set this in your environment or config
-  // Can be either channel ID (UC...) or channel handle (@username)
-  const YOUTUBE_CHANNEL_ID = import.meta.env.VITE_YOUTUBE_CHANNEL_ID || "";
-  const YOUTUBE_CHANNEL_HANDLE = import.meta.env.VITE_YOUTUBE_CHANNEL_HANDLE || "venusconsultancy5699"; // Default to your channel
+  // YouTube Playlist ID - Set this in your environment or config
+  // Get playlist ID from the playlist URL: https://www.youtube.com/playlist?list=PLAYLIST_ID
+  const YOUTUBE_PLAYLIST_ID = import.meta.env.VITE_YOUTUBE_PLAYLIST_ID || "PL7_T4oO_C6rWhsZ6DUZBUfsu9fGaz_tsg"; // Default to your playlist
 
-  // Fetch YouTube videos
+  // Fetch YouTube videos from playlist
   const fetchYouTubeVideos = async () => {
-    const channelIdentifier = YOUTUBE_CHANNEL_ID || YOUTUBE_CHANNEL_HANDLE;
-    
-    if (!channelIdentifier) {
-      console.warn("YouTube Channel ID or Handle not configured. Set VITE_YOUTUBE_CHANNEL_ID or VITE_YOUTUBE_CHANNEL_HANDLE in environment variables.");
+    if (!YOUTUBE_PLAYLIST_ID) {
+      console.warn("YouTube Playlist ID not configured. Set VITE_YOUTUBE_PLAYLIST_ID in environment variables.");
       return;
     }
 
     setLoadingVideos(true);
     setVideoError(null);
     try {
-      const params = { maxResults: 50 };
-      
-      // If it starts with UC, it's a channel ID, otherwise treat as handle
-      if (channelIdentifier.startsWith('UC') && channelIdentifier.length > 20) {
-        params.channelId = channelIdentifier;
-      } else {
-        // Remove @ if present
-        params.channelHandle = channelIdentifier.replace(/^@/, '');
-      }
-
-      const response = await API.get(`/youtube/videos`, { params });
+      const response = await API.get(`/youtube/playlist`, {
+        params: {
+          playlistId: YOUTUBE_PLAYLIST_ID,
+          maxResults: 50,
+        },
+      });
       if (response.data.success) {
         setYoutubeVideos(response.data.videos || []);
       }
@@ -60,7 +52,7 @@ const Gallery = () => {
     }, 5 * 60 * 1000); // 5 minutes
 
     return () => clearInterval(refreshInterval);
-  }, [YOUTUBE_CHANNEL_ID, YOUTUBE_CHANNEL_HANDLE]);
+  }, [YOUTUBE_PLAYLIST_ID]);
 
   // Detect image orientation when image loads
   const handleImageLoad = (itemId, event) => {
@@ -133,16 +125,6 @@ const Gallery = () => {
           <p className="gallery-hero__subtitle">
             Capturing moments from our events, meetings, and networking sessions
           </p>
-          {(YOUTUBE_CHANNEL_ID || YOUTUBE_CHANNEL_HANDLE) && (
-            <button 
-              className="gallery-refresh-btn"
-              onClick={fetchYouTubeVideos}
-              disabled={loadingVideos}
-              title="Refresh videos"
-            >
-              {loadingVideos ? "Refreshing..." : "🔄 Refresh Videos"}
-            </button>
-          )}
         </div>
       </section>
 
@@ -152,13 +134,14 @@ const Gallery = () => {
           {/* YouTube Videos Section */}
           <div className="gallery-videos-section">
             <h2 className="gallery-section-title">Our Videos</h2>
-            {!YOUTUBE_CHANNEL_ID && !YOUTUBE_CHANNEL_HANDLE && (
+            {!YOUTUBE_PLAYLIST_ID && (
               <div className="gallery-info-message">
-                <p>To display YouTube videos, please set <code>VITE_YOUTUBE_CHANNEL_ID</code> or <code>VITE_YOUTUBE_CHANNEL_HANDLE</code> in your environment variables.</p>
-                <p>You can use either your Channel ID (from YouTube Studio) or your channel handle (e.g., @venusconsultancy5699)</p>
+                <p>To display YouTube videos, please set <code>VITE_YOUTUBE_PLAYLIST_ID</code> in your environment variables.</p>
+                <p>Get your Playlist ID from the playlist URL: <code>https://www.youtube.com/playlist?list=PLAYLIST_ID</code></p>
+                <p>The Playlist ID is the part after <code>list=</code> in the URL.</p>
               </div>
             )}
-            {(YOUTUBE_CHANNEL_ID || YOUTUBE_CHANNEL_HANDLE) && loadingVideos && (
+            {YOUTUBE_PLAYLIST_ID && loadingVideos && (
               <div className="gallery-loading-message">
                 Loading videos...
               </div>
@@ -209,9 +192,9 @@ const Gallery = () => {
                 ))}
               </div>
             )}
-            {(YOUTUBE_CHANNEL_ID || YOUTUBE_CHANNEL_HANDLE) && !loadingVideos && videoItems.length === 0 && !videoError && (
+            {YOUTUBE_PLAYLIST_ID && !loadingVideos && videoItems.length === 0 && !videoError && (
               <div className="gallery-info-message">
-                No videos found. Make sure your channel has uploaded videos.
+                No videos found. Make sure your playlist has videos.
               </div>
             )}
           </div>

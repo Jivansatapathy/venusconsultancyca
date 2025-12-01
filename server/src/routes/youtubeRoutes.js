@@ -305,5 +305,91 @@ router.get("/channel-id", async (req, res) => {
   }
 });
 
+// Get videos from a specific playlist
+router.get("/playlist", async (req, res) => {
+  try {
+    const { playlistId, maxResults = 50 } = req.query;
+    // Using API key directly for now - TODO: Move to environment variable
+    const apiKey = process.env.YOUTUBE_API_KEY || "AIzaSyBrGXFccE_qNIlL0k12KYNF8FJk1XNhx1A";
+
+    if (!apiKey) {
+      return res.status(500).json({ 
+        error: "YouTube API key not configured" 
+      });
+    }
+
+    if (!playlistId) {
+      return res.status(400).json({ 
+        error: "Playlist ID is required. Provide it as a query parameter: ?playlistId=YOUR_PLAYLIST_ID" 
+      });
+    }
+
+    // Get videos from the playlist
+    const videosResponse = await axios.get(
+      "https://www.googleapis.com/youtube/v3/playlistItems",
+      {
+        params: {
+          part: "snippet,contentDetails",
+          playlistId: playlistId,
+          maxResults: parseInt(maxResults),
+          key: apiKey,
+        },
+      }
+    );
+
+    // Get additional video details (statistics, duration, etc.)
+    const videoIds = videosResponse.data.items.map(
+      (item) => item.contentDetails.videoId
+    );
+
+    let videoDetails = [];
+    if (videoIds.length > 0) {
+      const detailsResponse = await axios.get(
+        "https://www.googleapis.com/youtube/v3/videos",
+        {
+          params: {
+            part: "snippet,statistics,contentDetails",
+            id: videoIds.join(","),
+            key: apiKey,
+          },
+        }
+      );
+      videoDetails = detailsResponse.data.items;
+    }
+
+    // Combine playlist items with video details
+    const videos = videosResponse.data.items.map((item, index) => {
+      const details = videoDetails[index] || {};
+      return {
+        id: item.contentDetails.videoId,
+        videoId: item.contentDetails.videoId,
+        title: item.snippet.title,
+        description: item.snippet.description,
+        thumbnail: item.snippet.thumbnails.high?.url || item.snippet.thumbnails.default?.url,
+        publishedAt: item.snippet.publishedAt,
+        channelTitle: item.snippet.channelTitle,
+        viewCount: details.statistics?.viewCount || 0,
+        likeCount: details.statistics?.likeCount || 0,
+        duration: details.contentDetails?.duration || "",
+        embedUrl: `https://www.youtube.com/embed/${item.contentDetails.videoId}`,
+        watchUrl: `https://www.youtube.com/watch?v=${item.contentDetails.videoId}`,
+      };
+    });
+
+    res.json({
+      success: true,
+      videos,
+      total: videos.length,
+      playlistId: playlistId,
+    });
+  } catch (error) {
+    console.error("YouTube API Error:", error.response?.data || error.message);
+    res.status(500).json({
+      error: "Failed to fetch YouTube playlist videos",
+      message: error.response?.data?.error?.message || error.message,
+    });
+  }
+});
+
 export default router;
 
