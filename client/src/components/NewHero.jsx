@@ -53,9 +53,7 @@ const NewHero = () => {
   // First slider with jobfair and gallery images (repeated and alternating)
   const slider1Images = [
     '/slider/jobfair.jpg',
-    '/gallery/Great Meeting With the 22nd Prime Minister of Canada Stephen Harper.jpg',
     '/slider/jobfair2.jpg',
-    '/gallery/Great meeting with the Governor of the Bank of Canada, Tiff Macklem.jpg',
     '/slider/jobfair1.jpg',
     '/gallery/Team Venus at US thanks giving dinner at AMCHAM Gala Event.jpg',
     '/slider/jobfair.jpg',
