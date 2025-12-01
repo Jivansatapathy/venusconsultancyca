@@ -11,31 +11,40 @@ const Gallery = () => {
   const [loadingVideos, setLoadingVideos] = useState(false);
   const [videoError, setVideoError] = useState(null);
 
-  // YouTube Channel ID - Set this in your environment or config
+  // YouTube Channel ID or Handle - Set this in your environment or config
+  // Can be either channel ID (UC...) or channel handle (@username)
   const YOUTUBE_CHANNEL_ID = import.meta.env.VITE_YOUTUBE_CHANNEL_ID || "";
+  const YOUTUBE_CHANNEL_HANDLE = import.meta.env.VITE_YOUTUBE_CHANNEL_HANDLE || "venusconsultancy5699"; // Default to your channel
 
   // Fetch YouTube videos
   const fetchYouTubeVideos = async () => {
-    if (!YOUTUBE_CHANNEL_ID) {
-      console.warn("YouTube Channel ID not configured. Set VITE_YOUTUBE_CHANNEL_ID in environment variables.");
+    const channelIdentifier = YOUTUBE_CHANNEL_ID || YOUTUBE_CHANNEL_HANDLE;
+    
+    if (!channelIdentifier) {
+      console.warn("YouTube Channel ID or Handle not configured. Set VITE_YOUTUBE_CHANNEL_ID or VITE_YOUTUBE_CHANNEL_HANDLE in environment variables.");
       return;
     }
 
     setLoadingVideos(true);
     setVideoError(null);
     try {
-      const response = await API.get(`/youtube/videos`, {
-        params: {
-          channelId: YOUTUBE_CHANNEL_ID,
-          maxResults: 50,
-        },
-      });
+      const params = { maxResults: 50 };
+      
+      // If it starts with UC, it's a channel ID, otherwise treat as handle
+      if (channelIdentifier.startsWith('UC') && channelIdentifier.length > 20) {
+        params.channelId = channelIdentifier;
+      } else {
+        // Remove @ if present
+        params.channelHandle = channelIdentifier.replace(/^@/, '');
+      }
+
+      const response = await API.get(`/youtube/videos`, { params });
       if (response.data.success) {
         setYoutubeVideos(response.data.videos || []);
       }
     } catch (error) {
       console.error("Error fetching YouTube videos:", error);
-      setVideoError(error.response?.data?.error || "Failed to load videos");
+      setVideoError(error.response?.data?.error || error.response?.data?.message || "Failed to load videos");
     } finally {
       setLoadingVideos(false);
     }
@@ -51,7 +60,7 @@ const Gallery = () => {
     }, 5 * 60 * 1000); // 5 minutes
 
     return () => clearInterval(refreshInterval);
-  }, [YOUTUBE_CHANNEL_ID]);
+  }, [YOUTUBE_CHANNEL_ID, YOUTUBE_CHANNEL_HANDLE]);
 
   // Detect image orientation when image loads
   const handleImageLoad = (itemId, event) => {
@@ -124,7 +133,7 @@ const Gallery = () => {
           <p className="gallery-hero__subtitle">
             Capturing moments from our events, meetings, and networking sessions
           </p>
-          {YOUTUBE_CHANNEL_ID && (
+          {(YOUTUBE_CHANNEL_ID || YOUTUBE_CHANNEL_HANDLE) && (
             <button 
               className="gallery-refresh-btn"
               onClick={fetchYouTubeVideos}
@@ -141,14 +150,25 @@ const Gallery = () => {
       <section className="gallery-section">
         <div className="gallery-container">
           {/* YouTube Videos Section */}
-          {videoItems.length > 0 && (
-            <div className="gallery-videos-section">
-              <h2 className="gallery-section-title">Our Videos</h2>
-              {videoError && (
-                <div className="gallery-error-message">
-                  {videoError}
-                </div>
-              )}
+          <div className="gallery-videos-section">
+            <h2 className="gallery-section-title">Our Videos</h2>
+            {!YOUTUBE_CHANNEL_ID && !YOUTUBE_CHANNEL_HANDLE && (
+              <div className="gallery-info-message">
+                <p>To display YouTube videos, please set <code>VITE_YOUTUBE_CHANNEL_ID</code> or <code>VITE_YOUTUBE_CHANNEL_HANDLE</code> in your environment variables.</p>
+                <p>You can use either your Channel ID (from YouTube Studio) or your channel handle (e.g., @venusconsultancy5699)</p>
+              </div>
+            )}
+            {(YOUTUBE_CHANNEL_ID || YOUTUBE_CHANNEL_HANDLE) && loadingVideos && (
+              <div className="gallery-loading-message">
+                Loading videos...
+              </div>
+            )}
+            {videoError && (
+              <div className="gallery-error-message">
+                {videoError}
+              </div>
+            )}
+            {videoItems.length > 0 && (
               <div className="gallery-grid gallery-grid--videos">
                 {videoItems.map((video) => (
                   <div
@@ -188,8 +208,13 @@ const Gallery = () => {
                   </div>
                 ))}
               </div>
-            </div>
-          )}
+            )}
+            {(YOUTUBE_CHANNEL_ID || YOUTUBE_CHANNEL_HANDLE) && !loadingVideos && videoItems.length === 0 && !videoError && (
+              <div className="gallery-info-message">
+                No videos found. Make sure your channel has uploaded videos.
+              </div>
+            )}
+          </div>
 
           {/* Landscape Images Section */}
           {landscapeItems.length > 0 && (

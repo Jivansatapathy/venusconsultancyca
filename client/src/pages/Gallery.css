@@ -480,6 +480,43 @@
   border-left: 4px solid #c33;
 }
 
+.gallery-info-message {
+  background: #e3f2fd;
+  color: #1565c0;
+  padding: 16px 20px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  text-align: center;
+  border-left: 4px solid #1565c0;
+}
+
+.gallery-info-message code {
+  background: rgba(255, 255, 255, 0.7);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9em;
+}
+
+.gallery-info-message a {
+  color: #0d47a1;
+  text-decoration: underline;
+}
+
+.gallery-info-message a:hover {
+  color: #0277bd;
+}
+
+.gallery-loading-message {
+  background: #f3f4f6;
+  color: #4b5563;
+  padding: 16px 20px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  text-align: center;
+  border-left: 4px solid #9ca3af;
+}
+
 .gallery-grid--videos {
   margin-bottom: 40px;
 }
