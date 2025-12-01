@@ -131,74 +131,6 @@ const Gallery = () => {
       {/* Gallery Grid */}
       <section className="gallery-section">
         <div className="gallery-container">
-          {/* YouTube Videos Section */}
-          <div className="gallery-videos-section">
-            <h2 className="gallery-section-title">Our Videos</h2>
-            {!YOUTUBE_PLAYLIST_ID && (
-              <div className="gallery-info-message">
-                <p>To display YouTube videos, please set <code>VITE_YOUTUBE_PLAYLIST_ID</code> in your environment variables.</p>
-                <p>Get your Playlist ID from the playlist URL: <code>https://www.youtube.com/playlist?list=PLAYLIST_ID</code></p>
-                <p>The Playlist ID is the part after <code>list=</code> in the URL.</p>
-              </div>
-            )}
-            {YOUTUBE_PLAYLIST_ID && loadingVideos && (
-              <div className="gallery-loading-message">
-                Loading videos...
-              </div>
-            )}
-            {videoError && (
-              <div className="gallery-error-message">
-                {videoError}
-              </div>
-            )}
-            {videoItems.length > 0 && (
-              <div className="gallery-grid gallery-grid--videos">
-                {videoItems.map((video) => (
-                  <div
-                    key={video.id}
-                    className="gallery-item gallery-item--video gallery-item--landscape"
-                    onClick={() => openModal(video, true)}
-                  >
-                    <div className="gallery-item__image-wrapper">
-                      <img
-                        src={video.thumbnail}
-                        alt={video.title}
-                        className="gallery-item__image"
-                        loading="lazy"
-                      />
-                      <div className="gallery-item__video-overlay">
-                        <div className="gallery-item__play-button">
-                          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="32" cy="32" r="32" fill="rgba(0, 0, 0, 0.6)"/>
-                            <path d="M26 20L44 32L26 44V20Z" fill="white"/>
-                          </svg>
-                        </div>
-                      </div>
-                      <div className="gallery-item__overlay">
-                        <div className="gallery-item__info">
-                          <h3 className="gallery-item__title">{video.title}</h3>
-                          <div className="gallery-item__video-meta">
-                            <span className="gallery-item__video-views">
-                              {parseInt(video.viewCount).toLocaleString()} views
-                            </span>
-                            <span className="gallery-item__video-date">
-                              {new Date(video.publishedAt).toLocaleDateString()}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-            {YOUTUBE_PLAYLIST_ID && !loadingVideos && videoItems.length === 0 && !videoError && (
-              <div className="gallery-info-message">
-                No videos found. Make sure your playlist has videos.
-              </div>
-            )}
-          </div>
-
           {/* Landscape Images Section */}
           {landscapeItems.length > 0 && (
             <div className="gallery-grid">
@@ -268,6 +200,74 @@ const Gallery = () => {
               })}
             </div>
           )}
+
+          {/* YouTube Videos Section */}
+          <div className="gallery-videos-section">
+            <h2 className="gallery-section-title">Our Videos</h2>
+            {!YOUTUBE_PLAYLIST_ID && (
+              <div className="gallery-info-message">
+                <p>To display YouTube videos, please set <code>VITE_YOUTUBE_PLAYLIST_ID</code> in your environment variables.</p>
+                <p>Get your Playlist ID from the playlist URL: <code>https://www.youtube.com/playlist?list=PLAYLIST_ID</code></p>
+                <p>The Playlist ID is the part after <code>list=</code> in the URL.</p>
+              </div>
+            )}
+            {YOUTUBE_PLAYLIST_ID && loadingVideos && (
+              <div className="gallery-loading-message">
+                Loading videos...
+              </div>
+            )}
+            {videoError && (
+              <div className="gallery-error-message">
+                {videoError}
+              </div>
+            )}
+            {videoItems.length > 0 && (
+              <div className="gallery-grid gallery-grid--videos">
+                {videoItems.map((video) => (
+                  <div
+                    key={video.id}
+                    className="gallery-item gallery-item--video gallery-item--landscape"
+                    onClick={() => openModal(video, true)}
+                  >
+                    <div className="gallery-item__image-wrapper">
+                      <img
+                        src={video.thumbnail}
+                        alt={video.title}
+                        className="gallery-item__image"
+                        loading="lazy"
+                      />
+                      <div className="gallery-item__video-overlay">
+                        <div className="gallery-item__play-button">
+                          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="32" cy="32" r="32" fill="rgba(0, 0, 0, 0.6)"/>
+                            <path d="M26 20L44 32L26 44V20Z" fill="white"/>
+                          </svg>
+                        </div>
+                      </div>
+                      <div className="gallery-item__overlay">
+                        <div className="gallery-item__info">
+                          <h3 className="gallery-item__title">{video.title}</h3>
+                          <div className="gallery-item__video-meta">
+                            <span className="gallery-item__video-views">
+                              {parseInt(video.viewCount).toLocaleString()} views
+                            </span>
+                            <span className="gallery-item__video-date">
+                              {new Date(video.publishedAt).toLocaleDateString()}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            {YOUTUBE_PLAYLIST_ID && !loadingVideos && videoItems.length === 0 && !videoError && (
+              <div className="gallery-info-message">
+                No videos found. Make sure your playlist has videos.
+              </div>
+            )}
+          </div>
         </div>
       </section>
 
