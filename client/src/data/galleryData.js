@@ -18,33 +18,33 @@ export const galleryData = [
     attendees: "Venus Consultancy team at diplomatic meeting",
     orientation: "landscape"
   },
-  {
-    id: 2,
-    image: "/gallery/Great Meeting With the 22nd Prime Minister of Canada Stephen Harper.jpg",
-    eventName: "With Stephen Harper - 22nd Prime Minister of Canada",
-    location: "Canada",
-    description: "Prestigious meeting with the 22nd Prime Minister of Canada, Stephen Harper, to discuss talent solutions and business development opportunities.",
-    attendees: "Venus Consultancy team met with Stephen Harper, 22nd Prime Minister of Canada",
-    orientation: "landscape"
-  },
-  {
-    id: 3,
-    image: "/gallery/Great meeting with the Governor of the Bank of Canada, Tiff Macklem.jpg",
-    eventName: "With Tiff Macklem - Governor of the Bank of Canada",
-    location: "Canada",
-    description: "Strategic meeting with Governor Tiff Macklem of the Bank of Canada to discuss economic trends and talent needs in the financial sector.",
-    attendees: "Venus Consultancy team met with Tiff Macklem, Governor of the Bank of Canada",
-    orientation: "landscape"
-  },
-  {
-    id: 4,
-    image: "/gallery/Great Meeting with the President & CEO of BDC bank, Isabelle Hudon.jpg",
-    eventName: "With Isabelle Hudon - President & CEO of BDC Bank",
-    location: "Canada",
-    description: "Productive meeting with Isabelle Hudon, President & CEO of BDC Bank, to explore talent solutions for business development and entrepreneurship.",
-    attendees: "Venus Consultancy team met with Isabelle Hudon, President & CEO of BDC Bank",
-    orientation: "landscape"
-  },
+  // {
+  //   id: 2,
+  //   image: "/gallery/Great Meeting With the 22nd Prime Minister of Canada Stephen Harper.jpg",
+  //   eventName: "With Stephen Harper - 22nd Prime Minister of Canada",
+  //   location: "Canada",
+  //   description: "Prestigious meeting with the 22nd Prime Minister of Canada, Stephen Harper, to discuss talent solutions and business development opportunities.",
+  //   attendees: "Venus Consultancy team met with Stephen Harper, 22nd Prime Minister of Canada",
+  //   orientation: "landscape"
+  // },
+  // {
+  //   id: 3,
+  //   image: "/gallery/Great meeting with the Governor of the Bank of Canada, Tiff Macklem.jpg",
+  //   eventName: "With Tiff Macklem - Governor of the Bank of Canada",
+  //   location: "Canada",
+  //   description: "Strategic meeting with Governor Tiff Macklem of the Bank of Canada to discuss economic trends and talent needs in the financial sector.",
+  //   attendees: "Venus Consultancy team met with Tiff Macklem, Governor of the Bank of Canada",
+  //   orientation: "landscape"
+  // },
+  // {
+  //   id: 4,
+  //   image: "/gallery/Great Meeting with the President & CEO of BDC bank, Isabelle Hudon.jpg",
+  //   eventName: "With Isabelle Hudon - President & CEO of BDC Bank",
+  //   location: "Canada",
+  //   description: "Productive meeting with Isabelle Hudon, President & CEO of BDC Bank, to explore talent solutions for business development and entrepreneurship.",
+  //   attendees: "Venus Consultancy team met with Isabelle Hudon, President & CEO of BDC Bank",
+  //   orientation: "landscape"
+  // },
   {
     id: 5,
     image: "/gallery/Ontario Business Network Event with Venus Consultancy and Venus Global tech.jpg",
@@ -126,23 +126,23 @@ export const galleryData = [
     attendees: "Venus Consultancy team at job fair event",
     orientation: "landscape"
   },
-  {
-    id: 14,
-    image: "/gallery/Venus Consultancy at Toronto Police Booth.jpg",
-    eventName: "Venus Consultancy at Toronto Police Booth",
-    location: "Toronto, Canada",
-    description: "Engaging with the Toronto Police Service, discussing talent recruitment and career opportunities in law enforcement and public service.",
-    attendees: "Venus Consultancy team at Toronto Police booth",
-    orientation: "landscape"
-  },
-  {
-    id: 15,
-    image: "/gallery/With The Minister of Energy Ontario Province, Todd Smith.jpg",
-    eventName: "With Todd Smith - Minister of Energy Ontario Province",
-    location: "Ontario, Canada",
-    description: "Important meeting with Todd Smith, Minister of Energy for Ontario Province, to discuss talent needs in the energy sector and business development opportunities.",
-    attendees: "Venus Consultancy team met with Todd Smith, Minister of Energy Ontario Province",
-    orientation: "landscape"
-  }
+  // {
+  //   id: 14,
+  //   image: "/gallery/Venus Consultancy at Toronto Police Booth.jpg",
+  //   eventName: "Venus Consultancy at Toronto Police Booth",
+  //   location: "Toronto, Canada",
+  //   description: "Engaging with the Toronto Police Service, discussing talent recruitment and career opportunities in law enforcement and public service.",
+  //   attendees: "Venus Consultancy team at Toronto Police booth",
+  //   orientation: "landscape"
+  // },
+  // {
+  //   id: 15,
+  //   image: "/gallery/With The Minister of Energy Ontario Province, Todd Smith.jpg",
+  //   eventName: "With Todd Smith - Minister of Energy Ontario Province",
+  //   location: "Ontario, Canada",
+  //   description: "Important meeting with Todd Smith, Minister of Energy for Ontario Province, to discuss talent needs in the energy sector and business development opportunities.",
+  //   attendees: "Venus Consultancy team met with Todd Smith, Minister of Energy Ontario Province",
+  //   orientation: "landscape"
+  // }
 ];
 
