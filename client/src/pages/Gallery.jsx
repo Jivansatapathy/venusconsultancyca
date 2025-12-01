@@ -203,7 +203,6 @@ const Gallery = () => {
 
           {/* YouTube Videos Section */}
           <div className="gallery-videos-section">
-            <h2 className="gallery-section-title">Our Videos</h2>
             {!YOUTUBE_PLAYLIST_ID && (
               <div className="gallery-info-message">
                 <p>To display YouTube videos, please set <code>VITE_YOUTUBE_PLAYLIST_ID</code> in your environment variables.</p>
