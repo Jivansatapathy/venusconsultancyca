@@ -9,15 +9,31 @@ const COLLECTION_NAME = 'gallery1';
 export const getGalleryItems = async () => {
   try {
     const galleryRef = collection(db, COLLECTION_NAME);
-    const q = query(galleryRef, orderBy('id', 'asc'));
-    const querySnapshot = await getDocs(q);
+    // Try to order by id, but if that fails, just get all docs
+    let querySnapshot;
+    try {
+      const q = query(galleryRef, orderBy('id', 'asc'));
+      querySnapshot = await getDocs(q);
+    } catch (orderError) {
+      // If ordering fails (e.g., no index), just get all docs without ordering
+      console.warn('Could not order by id, fetching without order:', orderError);
+      querySnapshot = await getDocs(galleryRef);
+    }
     
     const items = [];
     querySnapshot.forEach((doc) => {
+      const data = doc.data();
       items.push({
         id: doc.id,
-        ...doc.data()
+        ...data
       });
+    });
+    
+    // Sort by id if it exists (as number)
+    items.sort((a, b) => {
+      const idA = parseInt(a.id) || 0;
+      const idB = parseInt(b.id) || 0;
+      return idA - idB;
     });
     
     return items;

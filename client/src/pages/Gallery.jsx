@@ -52,9 +52,18 @@ const Gallery = () => {
     setGalleryError(null);
     try {
       const items = await getGalleryItems();
+      
+      // If Firebase returns empty array, use fallback data
+      if (!items || items.length === 0) {
+        console.log("No items in Firebase, using fallback data");
+        setGalleryError("No gallery items found in Firebase. Using fallback data.");
+        setGalleryItems(fallbackGalleryData);
+        return;
+      }
+      
       // Transform Firebase data to match the expected format
       const transformedItems = items.map(item => ({
-        id: item.id,
+        id: item.id || item.id,
         image: item.imageUrl || item.image,
         eventName: item.eventName,
         location: item.location,
@@ -62,10 +71,12 @@ const Gallery = () => {
         attendees: item.attendees,
         orientation: item.orientation || 'landscape'
       }));
+      
+      console.log("Loaded gallery items from Firebase:", transformedItems.length);
       setGalleryItems(transformedItems);
     } catch (error) {
       console.error("Error fetching gallery items:", error);
-      setGalleryError("Failed to load gallery. Using fallback data.");
+      setGalleryError("Failed to load gallery from Firebase. Using fallback data.");
       // Fallback to static data if Firebase fails
       setGalleryItems(fallbackGalleryData);
     } finally {
@@ -171,6 +182,11 @@ const Gallery = () => {
           {galleryError && (
             <div className="gallery-error-message" style={{ marginBottom: '1rem', padding: '1rem', backgroundColor: '#fff3cd', color: '#856404', borderRadius: '4px' }}>
               {galleryError}
+            </div>
+          )}
+          {!loadingGallery && galleryItems.length === 0 && (
+            <div style={{ padding: '2rem', textAlign: 'center', color: '#666' }}>
+              <p>No gallery items found. Please seed the data or add items through the admin panel.</p>
             </div>
           )}
           {/* Landscape Images Section */}
