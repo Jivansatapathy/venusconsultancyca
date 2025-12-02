@@ -1,7 +1,8 @@
 // client/src/pages/Gallery.jsx
 import React, { useState, useMemo, useEffect } from "react";
 import "./Gallery.css";
-import { galleryData } from "../data/galleryData";
+import { galleryData as fallbackGalleryData } from "../data/galleryData";
+import { getGalleryItems } from "../services/galleryService";
 import API from "../utils/api";
 
 const Gallery = () => {
@@ -10,6 +11,9 @@ const Gallery = () => {
   const [youtubeVideos, setYoutubeVideos] = useState([]);
   const [loadingVideos, setLoadingVideos] = useState(false);
   const [videoError, setVideoError] = useState(null);
+  const [galleryItems, setGalleryItems] = useState([]);
+  const [loadingGallery, setLoadingGallery] = useState(true);
+  const [galleryError, setGalleryError] = useState(null);
 
   // YouTube Playlist ID - Set this in your environment or config
   // Get playlist ID from the playlist URL: https://www.youtube.com/playlist?list=PLAYLIST_ID
@@ -42,8 +46,36 @@ const Gallery = () => {
     }
   };
 
+  // Fetch gallery items from Firebase
+  const fetchGalleryItems = async () => {
+    setLoadingGallery(true);
+    setGalleryError(null);
+    try {
+      const items = await getGalleryItems();
+      // Transform Firebase data to match the expected format
+      const transformedItems = items.map(item => ({
+        id: item.id,
+        image: item.imageUrl || item.image,
+        eventName: item.eventName,
+        location: item.location,
+        description: item.description,
+        attendees: item.attendees,
+        orientation: item.orientation || 'landscape'
+      }));
+      setGalleryItems(transformedItems);
+    } catch (error) {
+      console.error("Error fetching gallery items:", error);
+      setGalleryError("Failed to load gallery. Using fallback data.");
+      // Fallback to static data if Firebase fails
+      setGalleryItems(fallbackGalleryData);
+    } finally {
+      setLoadingGallery(false);
+    }
+  };
+
   // Fetch videos on component mount and set up auto-refresh
   useEffect(() => {
+    fetchGalleryItems();
     fetchYouTubeVideos();
 
     // Auto-refresh videos every 5 minutes to get new uploads
@@ -92,7 +124,7 @@ const Gallery = () => {
     const videos = [];
     
     // Process image gallery items
-    galleryData.forEach((item) => {
+    galleryItems.forEach((item) => {
       // Use detected orientation or fallback to item.orientation
       const detectedOrientation = imageOrientations[item.id] || item.orientation;
       const itemWithOrientation = { ...item, currentOrientation: detectedOrientation };
@@ -114,7 +146,7 @@ const Gallery = () => {
     });
     
     return { landscapeItems: landscape, portraitItems: portrait, videoItems: videos };
-  }, [imageOrientations, youtubeVideos]);
+  }, [imageOrientations, youtubeVideos, galleryItems]);
 
   return (
     <main className="gallery-page">
@@ -131,6 +163,16 @@ const Gallery = () => {
       {/* Gallery Grid */}
       <section className="gallery-section">
         <div className="gallery-container">
+          {loadingGallery && (
+            <div className="gallery-loading-message">
+              Loading gallery...
+            </div>
+          )}
+          {galleryError && (
+            <div className="gallery-error-message" style={{ marginBottom: '1rem', padding: '1rem', backgroundColor: '#fff3cd', color: '#856404', borderRadius: '4px' }}>
+              {galleryError}
+            </div>
+          )}
           {/* Landscape Images Section */}
           {landscapeItems.length > 0 && (
             <div className="gallery-grid">
