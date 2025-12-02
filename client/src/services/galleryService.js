@@ -9,33 +9,28 @@ const COLLECTION_NAME = 'gallery1';
 export const getGalleryItems = async () => {
   try {
     const galleryRef = collection(db, COLLECTION_NAME);
-    // Try to order by id, but if that fails, just get all docs
-    let querySnapshot;
-    try {
-      const q = query(galleryRef, orderBy('id', 'asc'));
-      querySnapshot = await getDocs(q);
-    } catch (orderError) {
-      // If ordering fails (e.g., no index), just get all docs without ordering
-      console.warn('Could not order by id, fetching without order:', orderError);
-      querySnapshot = await getDocs(galleryRef);
-    }
+    // Get all documents - the seed script uses document ID as the item id
+    const querySnapshot = await getDocs(galleryRef);
     
     const items = [];
-    querySnapshot.forEach((doc) => {
-      const data = doc.data();
+    querySnapshot.forEach((docSnapshot) => {
+      const data = docSnapshot.data();
+      // Use document ID as the id, or use the id field from data if it exists
+      const itemId = docSnapshot.id || data.id;
       items.push({
-        id: doc.id,
+        id: itemId,
         ...data
       });
     });
     
-    // Sort by id if it exists (as number)
+    // Sort by id (as number) to maintain order
     items.sort((a, b) => {
       const idA = parseInt(a.id) || 0;
       const idB = parseInt(b.id) || 0;
       return idA - idB;
     });
     
+    console.log(`Fetched ${items.length} gallery items from Firestore`);
     return items;
   } catch (error) {
     console.error('Error fetching gallery items:', error);
@@ -134,4 +129,5 @@ export const deleteGalleryItem = async (itemId, imageUrl) => {
     throw error;
   }
 };
+
 
