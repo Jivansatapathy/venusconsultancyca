@@ -62,17 +62,29 @@ const Gallery = () => {
       }
       
       // Transform Firebase data to match the expected format
-      const transformedItems = items.map(item => ({
-        id: item.id || item.id,
-        image: item.imageUrl || item.image,
-        eventName: item.eventName,
-        location: item.location,
-        description: item.description,
-        attendees: item.attendees,
-        orientation: item.orientation || 'landscape'
-      }));
+      const transformedItems = items.map(item => {
+        // Prioritize imageUrl from Firebase (it's stored as imageUrl in Firestore)
+        const imageUrl = item.imageUrl || item.image;
+        return {
+          id: item.id,
+          image: imageUrl, // Use imageUrl from Firebase - this is the Firebase Storage URL
+          imageUrl: imageUrl, // Also keep imageUrl for reference
+          eventName: item.eventName,
+          location: item.location,
+          description: item.description,
+          attendees: item.attendees,
+          orientation: item.orientation || 'landscape'
+        };
+      });
       
       console.log("Loaded gallery items from Firebase:", transformedItems.length);
+      if (transformedItems.length > 0) {
+        console.log("First item sample:", {
+          id: transformedItems[0].id,
+          eventName: transformedItems[0].eventName,
+          imageUrl: transformedItems[0].image
+        });
+      }
       setGalleryItems(transformedItems);
     } catch (error) {
       console.error("Error fetching gallery items:", error);
@@ -202,7 +214,7 @@ const Gallery = () => {
                   >
                     <div className="gallery-item__image-wrapper">
                       <img
-                        src={encodeURI(item.image)}
+                        src={item.image || item.imageUrl}
                         alt={item.eventName}
                         className="gallery-item__image"
                         loading="lazy"
@@ -237,7 +249,7 @@ const Gallery = () => {
                   >
                     <div className="gallery-item__image-wrapper">
                       <img
-                        src={encodeURI(item.image)}
+                        src={item.image || item.imageUrl}
                         alt={item.eventName}
                         className="gallery-item__image"
                         loading="lazy"
@@ -391,10 +403,11 @@ const Gallery = () => {
                 <>
                   <div className={`gallery-modal__image-wrapper gallery-modal__image-wrapper--${selectedImage.orientation}`}>
                     <img
-                      src={encodeURI(selectedImage.image)}
+                      src={selectedImage.image || selectedImage.imageUrl}
                       alt={selectedImage.eventName}
                       className="gallery-modal__image"
                       onError={(e) => {
+                        console.error('Image failed to load:', selectedImage.image || selectedImage.imageUrl);
                         e.target.src = '/venuslogo.png'; // Fallback image
                         e.target.alt = 'Image not available';
                       }}
