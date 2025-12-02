@@ -26,6 +26,7 @@ const BookCall = lazy(() => import("./pages/BookCall"));
 const Hiring = lazy(() => import("./pages/Hiring"));
 const JobRoles = lazy(() => import("./pages/JobRoles"));
 const ServiceCategory = lazy(() => import("./pages/ServiceCategory"));
+const IndustryPage = lazy(() => import("./pages/IndustryPage"));
 const BlogDetail = lazy(() => import("./pages/BlogDetail"));
 const Blogs = lazy(() => import("./pages/Blogs"));
 const Gallery = lazy(() => import("./pages/Gallery"));
@@ -183,6 +184,11 @@ function AppContent() {
         <Route path="/service-category/:categoryKey" element={
           <Suspense fallback={<LoadingFallback />}>
             <ServiceCategory />
+          </Suspense>
+        } />
+        <Route path="/industry/:industrySlug" element={
+          <Suspense fallback={<LoadingFallback />}>
+            <IndustryPage />
           </Suspense>
         } />
         <Route path="/privacy" element={

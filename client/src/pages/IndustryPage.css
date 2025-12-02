@@ -1,0 +1,1471 @@
+/* Industry Page - Premium Design */
+.industry-page {
+  min-height: 100vh;
+  background: #ffffff;
+  width: 100%;
+}
+
+.industry-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* Hero Section - Premium Design */
+.industry-hero-section {
+  position: relative;
+  padding: 6rem 2rem;
+  background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 50%, #415a77 100%);
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  min-height: 85vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.industry-hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: inherit;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  opacity: 0.15;
+  z-index: 0;
+}
+
+.industry-hero-container {
+  position: relative;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  z-index: 1;
+}
+
+.industry-hero-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.industry-hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+.industry-hero-tag {
+  display: inline-block;
+  background: #e50914;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+}
+
+.industry-hero-title {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+  line-height: 1.2;
+  margin: 0 0 1.5rem 0;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+}
+
+.industry-hero-subtitle {
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+  font-weight: 600;
+  margin: 0 0 1rem 0;
+  color: rgba(255, 255, 255, 0.95);
+  line-height: 1.4;
+}
+
+.industry-hero-description {
+  font-size: clamp(1rem, 1.8vw, 1.2rem);
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0 0 2.5rem 0;
+  max-width: 600px;
+}
+
+.industry-hero-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.industry-btn {
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.industry-btn-primary {
+  background: #e50914;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(229, 9, 20, 0.3);
+}
+
+.industry-btn-primary:hover {
+  background: #c40812;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(229, 9, 20, 0.4);
+}
+
+.industry-btn-outline {
+  background: transparent;
+  color: #ffffff;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.industry-btn-outline:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #ffffff;
+  transform: translateY(-2px);
+}
+
+/* Hero Visual Section */
+.industry-hero-visual {
+  position: relative;
+  z-index: 2;
+}
+
+.industry-hero-visual-wrapper {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 2.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.industry-hero-stats-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.industry-hero-stat-mini {
+  text-align: center;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.industry-hero-stat-mini:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-4px);
+}
+
+.industry-hero-stat-number-mini {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 0.5rem 0;
+  line-height: 1;
+}
+
+.industry-hero-stat-label-mini {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+}
+
+/* Section Styles */
+.industry-who-are-we,
+.industry-why-you-need-us,
+.industry-what-we-can-do,
+.industry-faq-section {
+  padding: 6rem 2rem;
+}
+
+
+.industry-why-you-need-us {
+  background: #f9fafb;
+}
+
+.industry-what-we-can-do {
+  background: #ffffff;
+}
+
+.industry-faq-section {
+  background: #f9fafb;
+}
+
+/* Section Header */
+.industry-section-header {
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto 4rem;
+}
+
+.industry-section-tag {
+  display: inline-block;
+  color: #e50914;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 1rem;
+}
+
+.industry-section-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  margin: 0 0 1.5rem 0;
+  color: #0d1b2a;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.industry-section-description {
+  font-size: clamp(1rem, 1.8vw, 1.2rem);
+  margin: 0;
+  text-align: center;
+  color: #4b5563;
+  line-height: 1.7;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Light Section Header (for dark backgrounds) */
+.industry-section-header-light .industry-section-tag {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.industry-section-header-light .industry-section-title {
+  color: #ffffff;
+}
+
+/* Who Are We Section - Exact Replica of StatAbout from Home Page */
+.industry-who-are-we {
+  width: 100%;
+  background: #ffffff;
+  padding: 5rem 0;
+  font-family: 'Poppins', sans-serif;
+}
+
+.industry-who-are-we__container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 clamp(1.5rem, 4vw, 3rem);
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+/* Header Section */
+.industry-who-are-we__header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 4vw, 4rem);
+  align-items: start;
+  margin-bottom: 1rem;
+}
+
+.industry-who-are-we__main-title {
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.2;
+  color: #1A2020;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+.industry-who-are-we__main-description {
+  font-size: clamp(1rem, 1.8vw, 1.15rem);
+  line-height: 1.7;
+  color: #6b7280;
+  margin: 0;
+  max-width: 600px;
+}
+
+/* Grid Section - 5 Cards */
+.industry-who-are-we__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 1.5rem;
+  align-items: stretch;
+}
+
+/* Card Base Styles */
+.industry-who-are-we__card {
+  background: #f3f4f6;
+  border-radius: 12px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Card 1 - Large Vertical (spans 2 rows, column 1) */
+.industry-who-are-we__card--large {
+  grid-column: 1;
+  grid-row: 1 / 3;
+  justify-content: flex-start;
+}
+
+.industry-who-are-we__card--large .industry-who-are-we__card-number {
+  font-size: clamp(3rem, 6vw, 5rem);
+  font-weight: 800;
+  line-height: 1;
+  color: #1A2020;
+  margin-bottom: 1.5rem;
+}
+
+.industry-who-are-we__card--large .industry-who-are-we__card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.industry-who-are-we__card--large .industry-who-are-we__card-title {
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  font-weight: 600;
+  color: #1A2020;
+}
+
+.industry-who-are-we__card--large .industry-who-are-we__card-subtitle {
+  font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+/* Card 2 - Image Card (Top Middle, Column 2) */
+.industry-who-are-we__card--image:nth-of-type(2) {
+  grid-column: 2;
+  grid-row: 1;
+  padding: 0;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+.industry-who-are-we__card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Card 3 - Stat Card (Top Right, Column 3) */
+.industry-who-are-we__card--stat:nth-of-type(3) {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+.industry-who-are-we__card--stat .industry-who-are-we__card-number {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+  line-height: 1;
+  color: #1A2020;
+  margin-bottom: 1rem;
+}
+
+.industry-who-are-we__card--stat .industry-who-are-we__card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.industry-who-are-we__card--stat .industry-who-are-we__card-title {
+  font-size: clamp(1rem, 1.8vw, 1.2rem);
+  font-weight: 600;
+  color: #1A2020;
+}
+
+.industry-who-are-we__card--stat .industry-who-are-we__card-subtitle {
+  font-size: clamp(0.875rem, 1.5vw, 1rem);
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+/* Card 4 - Stat Card (Bottom Left, Column 2) */
+.industry-who-are-we__card--stat:nth-of-type(4) {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+/* Card 5 - Image Card (Bottom Right, Column 3) */
+.industry-who-are-we__card--image:nth-of-type(5) {
+  grid-column: 3;
+  grid-row: 2;
+  padding: 0;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+/* Card Content Styles */
+.industry-who-are-we__card-number {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+  line-height: 1;
+  color: #1A2020;
+  margin-bottom: 1rem;
+}
+
+.industry-who-are-we__card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.industry-who-are-we__card-title {
+  font-size: clamp(1rem, 1.8vw, 1.2rem);
+  font-weight: 600;
+  color: #1A2020;
+}
+
+.industry-who-are-we__card-subtitle {
+  font-size: clamp(0.875rem, 1.5vw, 1rem);
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+/* Why You Need Us Section - Exact Replica of Our Approach from About Us */
+.industry-why-you-need-us-header {
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto 4rem;
+}
+
+.industry-why-you-need-us-tag {
+  display: inline-block;
+  color: #666;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 1rem;
+}
+
+.industry-why-you-need-us-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: #000;
+  margin: 0 0 1rem 0;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.industry-why-you-need-us-subtitle {
+  font-size: 1.1rem;
+  color: #666;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.industry-why-you-need-us-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: stretch;
+}
+
+.industry-why-you-need-us-unified-card {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  width: 100%;
+  max-width: 800px;
+}
+
+.industry-why-you-need-us-image-column {
+  position: relative;
+  overflow: hidden;
+}
+
+.industry-why-you-need-us-hero-image {
+  width: 100%;
+  height: 100%;
+  min-height: 600px;
+  object-fit: cover;
+  display: block;
+}
+
+.industry-why-you-need-us-middle-column {
+  display: flex;
+  align-items: center;
+  padding: 2.5rem;
+  background: white;
+}
+
+.industry-why-you-need-us-middle-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.industry-why-you-need-us-card-tag {
+  display: block;
+  color: #666;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0 0 0.5rem 0;
+}
+
+.industry-why-you-need-us-card-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #000;
+  margin: 0 0 1rem 0;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.industry-why-you-need-us-card-description {
+  font-size: 0.95rem;
+  color: #666;
+  line-height: 1.7;
+  margin: 0;
+  flex: 1;
+}
+
+.industry-why-you-need-us-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #000;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  margin-top: auto;
+  transition: color 0.3s ease;
+  width: fit-content;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.industry-why-you-need-us-card-link:hover {
+  color: #e50914;
+}
+
+.industry-why-you-need-us-card-link svg {
+  transition: transform 0.3s ease;
+}
+
+.industry-why-you-need-us-card-link:hover svg {
+  transform: translateX(4px);
+}
+
+.industry-why-you-need-us-cards-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  height: 100%;
+  align-items: stretch;
+}
+
+.industry-why-you-need-us-card-small {
+  background: white;
+  border-radius: 12px;
+  padding: 2.5rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  flex: 1;
+  min-height: 0;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.industry-why-you-need-us-card-small:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.industry-why-you-need-us-card-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+  margin-bottom: 0.5rem;
+}
+
+.industry-why-you-need-us-card-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.industry-why-you-need-us-card-small-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #000;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.industry-why-you-need-us-card-small-description {
+  font-size: 0.9rem;
+  color: #666;
+  line-height: 1.6;
+  margin: 0;
+  flex: 1;
+}
+
+/* What We Can Do Section - Exact Replica of Our Domains from About Us */
+.industry-what-we-can-do-header {
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto 4rem;
+}
+
+.industry-what-we-can-do-label {
+  display: block;
+  color: #666;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0.5px;
+  margin-bottom: 1rem;
+}
+
+.industry-what-we-can-do-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: #000;
+  margin: 0 0 1rem 0;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.industry-what-we-can-do-subtitle {
+  font-size: 1.1rem;
+  color: #666;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.industry-what-we-can-do-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.industry-what-we-can-do-left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.industry-what-we-can-do-right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.industry-what-we-can-do-card-large {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 600px;
+}
+
+.industry-what-we-can-do-card-image-wrapper {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  flex: 0 0 70%;
+  min-height: 0;
+}
+
+.industry-what-we-can-do-card-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.industry-what-we-can-do-card-content {
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex: 0 0 30%;
+}
+
+.industry-what-we-can-do-card-category {
+  display: block;
+  color: #666;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.industry-what-we-can-do-card-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #000;
+  margin: 0;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.industry-what-we-can-do-card-description {
+  font-size: 0.95rem;
+  color: #666;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.industry-what-we-can-do-card-ctas {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.industry-what-we-can-do-cta-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #000;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.industry-what-we-can-do-cta-link:hover {
+  color: #e50914;
+}
+
+.industry-what-we-can-do-cta-link svg {
+  transition: transform 0.3s ease;
+}
+
+.industry-what-we-can-do-cta-link:hover svg {
+  transform: translateX(4px);
+}
+
+.industry-what-we-can-do-cards-stack-top {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  flex: 1;
+}
+
+.industry-what-we-can-do-card-small {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.industry-what-we-can-do-card-small:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.industry-what-we-can-do-card-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e50914;
+  border-radius: 50%;
+  margin-bottom: 0.5rem;
+  flex-shrink: 0;
+  padding: 12px;
+}
+
+.industry-what-we-can-do-card-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.industry-what-we-can-do-card-small-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #000;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.industry-what-we-can-do-card-small-description {
+  font-size: 0.9rem;
+  color: #666;
+  line-height: 1.6;
+  margin: 0;
+  flex: 1;
+}
+
+.industry-what-we-can-do-card-bottom-left {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-height: 200px;
+}
+
+.industry-what-we-can-do-card-bottom-left .industry-what-we-can-do-card-image-wrapper {
+  flex: 0 0 39.8%;
+  height: 100%;
+  min-height: 200px;
+}
+
+.industry-what-we-can-do-card-bottom-left .industry-what-we-can-do-card-content {
+  flex: 1;
+  padding: 2rem;
+}
+
+.industry-what-we-can-do-card-large-right {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 500px;
+}
+
+.industry-what-we-can-do-card-large-right .industry-what-we-can-do-card-image-wrapper {
+  flex: 0 0 60%;
+  min-height: 0;
+}
+
+.industry-what-we-can-do-card-large-right .industry-what-we-can-do-card-content {
+  flex: 0 0 40%;
+}
+
+/* Stats Section - Premium Design */
+.industry-stats-section {
+  padding: 6rem 2rem;
+  background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 50%, #415a77 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.industry-stats-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('/Hero-background.png') no-repeat center center/cover;
+  opacity: 0.1;
+  z-index: 0;
+}
+
+.industry-stats-section .industry-container {
+  position: relative;
+  z-index: 1;
+}
+
+.industry-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.industry-stat-card {
+  text-align: center;
+  padding: 2.5rem 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.industry-stat-card:hover {
+  transform: translateY(-6px);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+}
+
+.industry-stat-number {
+  font-size: clamp(2rem, 3.5vw, 2.5rem);
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 0.75rem 0;
+  line-height: 1;
+  background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.8) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.industry-stat-label {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+/* FAQ Section */
+.industry-faq-list {
+  max-width: 900px;
+  margin: 2rem auto 0;
+}
+
+.industry-faq-item {
+  background: #ffffff;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid #f3f4f6;
+}
+
+.industry-faq-item:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.industry-faq-item.open {
+  border-color: #e50914;
+  box-shadow: 0 4px 16px rgba(229, 9, 20, 0.15);
+}
+
+.industry-faq-question {
+  width: 100%;
+  padding: 1.5rem 2rem;
+  background: #ffffff;
+  border: none;
+  text-align: left;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #0d1b2a;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.3s ease;
+}
+
+.industry-faq-question:hover {
+  background: #f9fafb;
+  color: #e50914;
+}
+
+.industry-faq-icon {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #e50914;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(229, 9, 20, 0.1);
+  border-radius: 50%;
+}
+
+.industry-faq-item.open .industry-faq-icon {
+  transform: rotate(180deg);
+  background: #e50914;
+  color: white;
+}
+
+.industry-faq-answer {
+  padding: 0 2rem 1.5rem;
+  font-size: 1rem;
+  color: #4b5563;
+  line-height: 1.7;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Not Found */
+.industry-not-found {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.industry-not-found h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #0d1b2a;
+  margin: 0 0 1rem;
+}
+
+.industry-not-found p {
+  font-size: 1.125rem;
+  color: #4b5563;
+  margin: 0 0 2rem;
+}
+
+/* Responsive Design - Tablet */
+@media (max-width: 1024px) {
+  /* Hero Section - Tablet */
+  .industry-hero-section {
+    padding: 4rem 1.5rem;
+  }
+
+  .industry-hero-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .industry-hero-visual {
+    order: -1;
+  }
+
+  .industry-hero-title {
+    font-size: clamp(2rem, 4vw, 3rem);
+  }
+
+  /* Who Are We - Tablet */
+  .industry-who-are-we__header {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .industry-who-are-we__main-description {
+    max-width: 100%;
+  }
+
+  .industry-who-are-we__grid {
+    gap: 1.25rem;
+  }
+
+  /* Why Choose Us - Tablet */
+  .industry-why-you-need-us-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .industry-why-you-need-us-unified-card {
+    grid-template-columns: 1fr;
+    max-width: 100%;
+  }
+
+  .industry-why-you-need-us-hero-image {
+    min-height: 400px;
+  }
+
+  /* What We Can Do - Tablet */
+  .industry-what-we-can-do-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .industry-what-we-can-do-cards-stack-top {
+    flex-direction: row;
+  }
+
+  /* Stats - Tablet */
+  .industry-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  .industry-stat-number {
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+  }
+}
+
+@media (max-width: 768px) {
+  /* Hero Section - Mobile */
+  .industry-hero-section {
+    padding: 3rem 1rem;
+    min-height: auto;
+  }
+
+  .industry-hero-container {
+    padding: 0 1rem;
+  }
+
+  .industry-hero-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .industry-hero-title {
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+  }
+
+  .industry-hero-subtitle {
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+  }
+
+  .industry-hero-description {
+    font-size: clamp(0.95rem, 1.8vw, 1.1rem);
+  }
+
+  .industry-hero-buttons {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.75rem;
+  }
+
+  .industry-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 0.875rem 1.5rem;
+    font-size: 0.95rem;
+  }
+
+  .industry-hero-visual-wrapper {
+    padding: 1.5rem;
+  }
+
+  .industry-hero-stat-number-mini {
+    font-size: 1.75rem;
+  }
+
+  /* Who Are We - Mobile */
+  .industry-who-are-we {
+    padding: 3rem 0;
+  }
+
+  .industry-who-are-we__container {
+    gap: 2rem;
+    padding: 0 1rem;
+  }
+
+  .industry-who-are-we__header {
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .industry-who-are-we__main-title {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+  }
+
+  .industry-who-are-we__main-description {
+    font-size: clamp(0.95rem, 1.8vw, 1.1rem);
+  }
+
+  .industry-who-are-we__grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    gap: 1rem;
+  }
+
+  .industry-who-are-we__card--large {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .industry-who-are-we__card--image:nth-of-type(2),
+  .industry-who-are-we__card--image:nth-of-type(5) {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .industry-who-are-we__card--stat:nth-of-type(3),
+  .industry-who-are-we__card--stat:nth-of-type(4) {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .industry-who-are-we__card {
+    padding: 1.5rem;
+  }
+
+  .industry-who-are-we__card-number {
+    font-size: clamp(2rem, 5vw, 3rem);
+  }
+
+  /* Why Choose Us - Mobile */
+  .industry-why-you-need-us {
+    padding: 3rem 1rem;
+  }
+
+  .industry-container {
+    padding: 0 1rem;
+  }
+
+  .industry-why-you-need-us-header {
+    margin-bottom: 2rem;
+  }
+
+  .industry-why-you-need-us-title {
+    font-size: clamp(2rem, 4vw, 2.75rem);
+  }
+
+  .industry-why-you-need-us-subtitle {
+    font-size: clamp(0.95rem, 1.8vw, 1.1rem);
+  }
+
+  .industry-why-you-need-us-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .industry-why-you-need-us-unified-card {
+    grid-template-columns: 1fr;
+    max-width: 100%;
+  }
+
+  .industry-why-you-need-us-hero-image {
+    min-height: 300px;
+  }
+
+  .industry-why-you-need-us-middle-column {
+    padding: 1.5rem;
+  }
+
+  .industry-why-you-need-us-card-title {
+    font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+  }
+
+  .industry-why-you-need-us-card-small {
+    padding: 1.5rem;
+  }
+
+  /* What We Can Do - Mobile */
+  .industry-what-we-can-do {
+    padding: 3rem 1rem;
+  }
+
+  .industry-what-we-can-do-header {
+    margin-bottom: 2rem;
+  }
+
+  .industry-what-we-can-do-title {
+    font-size: clamp(2rem, 4vw, 2.75rem);
+  }
+
+  .industry-what-we-can-do-subtitle {
+    font-size: clamp(0.95rem, 1.8vw, 1.1rem);
+  }
+
+  .industry-what-we-can-do-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .industry-what-we-can-do-card-large {
+    min-height: auto;
+  }
+
+  .industry-what-we-can-do-card-image-wrapper {
+    flex: 0 0 50%;
+    min-height: 250px;
+  }
+
+  .industry-what-we-can-do-card-content {
+    padding: 1.5rem;
+  }
+
+  .industry-what-we-can-do-card-title {
+    font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+  }
+
+  .industry-what-we-can-do-cards-stack-top {
+    flex-direction: column;
+  }
+
+  .industry-what-we-can-do-card-small {
+    padding: 1.5rem;
+  }
+
+  .industry-what-we-can-do-card-bottom-left {
+    flex-direction: column;
+    min-height: auto;
+  }
+
+  .industry-what-we-can-do-card-bottom-left .industry-what-we-can-do-card-image-wrapper {
+    flex: 0 0 50%;
+    min-height: 200px;
+  }
+
+  .industry-what-we-can-do-card-large-right {
+    min-height: auto;
+  }
+
+  /* Stats Section - Mobile */
+  .industry-stats-section {
+    padding: 3rem 1rem;
+  }
+
+  .industry-stats-section .industry-container {
+    padding: 0 1rem;
+  }
+
+  .industry-section-header-light .industry-section-title {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+  }
+
+  .industry-stats-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .industry-stat-card {
+    padding: 1.5rem 1rem;
+  }
+
+  .industry-stat-number {
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+  }
+
+  .industry-stat-label {
+    font-size: clamp(0.875rem, 1.5vw, 1rem);
+  }
+
+  /* FAQ Section - Mobile */
+  .industry-faq-section {
+    padding: 3rem 1rem;
+  }
+
+  .industry-section-header {
+    margin-bottom: 2rem;
+  }
+
+  .industry-section-title {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+  }
+
+  .industry-section-description {
+    font-size: clamp(0.95rem, 1.8vw, 1.1rem);
+  }
+
+  .industry-faq-list {
+    margin-top: 1rem;
+  }
+
+  .industry-faq-question {
+    font-size: 1rem;
+    padding: 1.25rem 1.5rem;
+  }
+
+  .industry-faq-answer {
+    padding: 0 1.5rem 1.25rem;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Extra Small Mobile */
+  .industry-hero-section {
+    padding: 2rem 0.75rem;
+  }
+
+  .industry-hero-title {
+    font-size: 1.75rem;
+  }
+
+  .industry-hero-subtitle {
+    font-size: 1.1rem;
+  }
+
+  .industry-hero-description {
+    font-size: 0.9rem;
+  }
+
+  .industry-who-are-we {
+    padding: 2rem 0;
+  }
+
+  .industry-who-are-we__container {
+    padding: 0 0.75rem;
+  }
+
+  .industry-who-are-we__card {
+    padding: 1.25rem;
+  }
+
+  .industry-why-you-need-us,
+  .industry-what-we-can-do,
+  .industry-faq-section,
+  .industry-stats-section {
+    padding: 2rem 0.75rem;
+  }
+
+  .industry-container {
+    padding: 0 0.75rem;
+  }
+
+  .industry-why-you-need-us-title,
+  .industry-what-we-can-do-title,
+  .industry-section-title {
+    font-size: 1.75rem;
+  }
+
+  .industry-stats-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .industry-stat-number {
+    font-size: 1.5rem;
+  }
+
+  .industry-stat-label {
+    font-size: 0.875rem;
+  }
+
+  .industry-faq-question {
+    font-size: 0.95rem;
+    padding: 1rem 1.25rem;
+  }
+}

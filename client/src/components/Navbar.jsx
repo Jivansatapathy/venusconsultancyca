@@ -1,9 +1,10 @@
 // client/src/components/Navbar.jsx
 import { useState, useEffect, useRef, useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import "./Navbar.css";
 import { AuthContext } from "../context/AuthContext";
+import { industryData } from "../data/industryData";
 
 const NAV_LINKS = [
   { to: "/", label: "Home" },
@@ -23,8 +24,15 @@ const Navbar = () => {
   const { user, isAuthenticated, logout } = useContext(AuthContext);
   const [isScrolled, setIsScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [industriesDropdownOpen, setIndustriesDropdownOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  
+  // Get all industries for dropdown
+  const industries = Object.values(industryData).map(industry => ({
+    slug: industry.slug,
+    title: industry.title
+  }));
 
   const menuButtonRef = useRef(null);
   const firstLinkRef = useRef(null);
@@ -40,7 +48,19 @@ const Navbar = () => {
   // Close mobile menu when route changes
   useEffect(() => {
     setMenuOpen(false);
+    setIndustriesDropdownOpen(false);
   }, [location.pathname]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (industriesDropdownOpen && !event.target.closest('.vh-navlink-wrapper')) {
+        setIndustriesDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [industriesDropdownOpen]);
 
   // Manage focus trap + ESC while menu open
   useEffect(() => {
@@ -121,6 +141,7 @@ const Navbar = () => {
   return (
     <header className={`vh-navbar ${isScrolled ? "vh-navbar--scrolled" : ""}`}>
       <nav className="vh-navbar__inner u-container" aria-label="Main navigation">
+        {/* Logo on the left */}
         <Link to="/" className="vh-navbar__brand" aria-label="Venus Hiring home">
           <img
             src="/venuslo.png"
@@ -150,6 +171,61 @@ const Navbar = () => {
               </Link>
             );
           })}
+          
+          {/* Industries Dropdown - Hidden for now */}
+          {/* <div 
+            className="vh-navlink-wrapper"
+            onMouseEnter={() => setIndustriesDropdownOpen(true)}
+            onMouseLeave={(e) => {
+              // Check if we're moving to the dropdown
+              const relatedTarget = e.relatedTarget;
+              if (!relatedTarget || !e.currentTarget.contains(relatedTarget)) {
+                setIndustriesDropdownOpen(false);
+              }
+            }}
+          >
+            <button
+              className={`vh-navlink vh-navlink--dropdown ${industriesDropdownOpen ? "vh-navlink--dropdown-open" : ""} ${location.pathname.startsWith('/industry/') ? "active" : ""}`}
+              onClick={() => setIndustriesDropdownOpen(!industriesDropdownOpen)}
+              tabIndex={menuOpen ? -1 : 0}
+              aria-expanded={industriesDropdownOpen}
+              aria-haspopup="true"
+            >
+              Industries
+              <ChevronDown size={16} className="vh-navlink__chevron" />
+            </button>
+            {industriesDropdownOpen && (
+              <div 
+                className="vh-dropdown" 
+                role="menu"
+                onMouseEnter={() => setIndustriesDropdownOpen(true)}
+                onMouseLeave={() => setIndustriesDropdownOpen(false)}
+              >
+                {industries.map((industry) => {
+                  const isActive = location.pathname === `/industry/${industry.slug}`;
+                  return (
+                    <Link
+                      key={industry.slug}
+                      to={`/industry/${industry.slug}`}
+                      className={`vh-dropdown__item ${isActive ? "active" : ""}`}
+                      role="menuitem"
+                      onClick={() => setIndustriesDropdownOpen(false)}
+                    >
+                      {industry.title}
+                    </Link>
+                  );
+                })}
+                <Link
+                  to="/services"
+                  className="vh-dropdown__item vh-dropdown__item--view-all"
+                  role="menuitem"
+                  onClick={() => setIndustriesDropdownOpen(false)}
+                >
+                  View All Services →
+                </Link>
+              </div>
+            )}
+          </div> */}
           
           {/* Dashboard link for authenticated users */}
           {isAuthenticated && user && AUTH_LINKS.map((link) => {
@@ -225,6 +301,33 @@ const Navbar = () => {
               </Link>
             );
           })}
+          
+          {/* Industries Section in Mobile Menu - Hidden for now */}
+          {/* <div className="vh-mobile-menu__section">
+            <div className="vh-mobile-menu__section-title">Industries</div>
+            {industries.map((industry) => {
+              const isActive = location.pathname === `/industry/${industry.slug}`;
+              return (
+                <Link
+                  key={industry.slug}
+                  to={`/industry/${industry.slug}`}
+                  onClick={() => setMenuOpen(false)}
+                  className={`vh-mobile-menu__link vh-mobile-menu__link--sub ${isActive ? "active" : ""}`}
+                  role="menuitem"
+                >
+                  {industry.title}
+                </Link>
+              );
+            })}
+            <Link
+              to="/services"
+              onClick={() => setMenuOpen(false)}
+              className="vh-mobile-menu__link vh-mobile-menu__link--view-all"
+              role="menuitem"
+            >
+              View All Services →
+            </Link>
+          </div> */}
           
           {/* Dashboard link for authenticated users in mobile menu */}
           {isAuthenticated && user && AUTH_LINKS.map((link) => {
