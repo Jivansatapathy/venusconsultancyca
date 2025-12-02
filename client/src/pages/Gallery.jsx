@@ -1,7 +1,8 @@
 // client/src/pages/Gallery.jsx
 import React, { useState, useMemo, useEffect } from "react";
 import "./Gallery.css";
-import { galleryData } from "../data/galleryData";
+import { galleryData as fallbackGalleryData } from "../data/galleryData";
+import { getGalleryItems } from "../services/galleryService";
 import API from "../utils/api";
 
 const Gallery = () => {
@@ -10,6 +11,9 @@ const Gallery = () => {
   const [youtubeVideos, setYoutubeVideos] = useState([]);
   const [loadingVideos, setLoadingVideos] = useState(false);
   const [videoError, setVideoError] = useState(null);
+  const [galleryItems, setGalleryItems] = useState([]);
+  const [loadingGallery, setLoadingGallery] = useState(true);
+  const [galleryError, setGalleryError] = useState(null);
 
   // YouTube Playlist ID - Set this in your environment or config
   // Get playlist ID from the playlist URL: https://www.youtube.com/playlist?list=PLAYLIST_ID
@@ -42,8 +46,59 @@ const Gallery = () => {
     }
   };
 
+  // Fetch gallery items from Firebase
+  const fetchGalleryItems = async () => {
+    setLoadingGallery(true);
+    setGalleryError(null);
+    try {
+      const items = await getGalleryItems();
+      
+      // If Firebase returns empty array, use fallback data
+      if (!items || items.length === 0) {
+        console.log("No items in Firebase, using fallback data");
+        setGalleryError("No gallery items found in Firebase. Using fallback data.");
+        setGalleryItems(fallbackGalleryData);
+        return;
+      }
+      
+      // Transform Firebase data to match the expected format
+      const transformedItems = items.map(item => {
+        // Prioritize imageUrl from Firebase (it's stored as imageUrl in Firestore)
+        const imageUrl = item.imageUrl || item.image;
+        return {
+          id: item.id,
+          image: imageUrl, // Use imageUrl from Firebase - this is the Firebase Storage URL
+          imageUrl: imageUrl, // Also keep imageUrl for reference
+          eventName: item.eventName,
+          location: item.location,
+          description: item.description,
+          attendees: item.attendees,
+          orientation: item.orientation || 'landscape'
+        };
+      });
+      
+      console.log("Loaded gallery items from Firebase:", transformedItems.length);
+      if (transformedItems.length > 0) {
+        console.log("First item sample:", {
+          id: transformedItems[0].id,
+          eventName: transformedItems[0].eventName,
+          imageUrl: transformedItems[0].image
+        });
+      }
+      setGalleryItems(transformedItems);
+    } catch (error) {
+      console.error("Error fetching gallery items:", error);
+      setGalleryError("Failed to load gallery from Firebase. Using fallback data.");
+      // Fallback to static data if Firebase fails
+      setGalleryItems(fallbackGalleryData);
+    } finally {
+      setLoadingGallery(false);
+    }
+  };
+
   // Fetch videos on component mount and set up auto-refresh
   useEffect(() => {
+    fetchGalleryItems();
     fetchYouTubeVideos();
 
     // Auto-refresh videos every 5 minutes to get new uploads
@@ -92,7 +147,7 @@ const Gallery = () => {
     const videos = [];
     
     // Process image gallery items
-    galleryData.forEach((item) => {
+    galleryItems.forEach((item) => {
       // Use detected orientation or fallback to item.orientation
       const detectedOrientation = imageOrientations[item.id] || item.orientation;
       const itemWithOrientation = { ...item, currentOrientation: detectedOrientation };
@@ -114,7 +169,7 @@ const Gallery = () => {
     });
     
     return { landscapeItems: landscape, portraitItems: portrait, videoItems: videos };
-  }, [imageOrientations, youtubeVideos]);
+  }, [imageOrientations, youtubeVideos, galleryItems]);
 
   return (
     <main className="gallery-page">
@@ -131,6 +186,21 @@ const Gallery = () => {
       {/* Gallery Grid */}
       <section className="gallery-section">
         <div className="gallery-container">
+          {loadingGallery && (
+            <div className="gallery-loading-message">
+              Loading gallery...
+            </div>
+          )}
+          {galleryError && (
+            <div className="gallery-error-message" style={{ marginBottom: '1rem', padding: '1rem', backgroundColor: '#fff3cd', color: '#856404', borderRadius: '4px' }}>
+              {galleryError}
+            </div>
+          )}
+          {!loadingGallery && galleryItems.length === 0 && (
+            <div style={{ padding: '2rem', textAlign: 'center', color: '#666' }}>
+              <p>No gallery items found. Please seed the data or add items through the admin panel.</p>
+            </div>
+          )}
           {/* Landscape Images Section */}
           {landscapeItems.length > 0 && (
             <div className="gallery-grid">
@@ -144,7 +214,7 @@ const Gallery = () => {
                   >
                     <div className="gallery-item__image-wrapper">
                       <img
-                        src={encodeURI(item.image)}
+                        src={item.image || item.imageUrl}
                         alt={item.eventName}
                         className="gallery-item__image"
                         loading="lazy"
@@ -179,7 +249,7 @@ const Gallery = () => {
                   >
                     <div className="gallery-item__image-wrapper">
                       <img
-                        src={encodeURI(item.image)}
+                        src={item.image || item.imageUrl}
                         alt={item.eventName}
                         className="gallery-item__image"
                         loading="lazy"
@@ -333,10 +403,11 @@ const Gallery = () => {
                 <>
                   <div className={`gallery-modal__image-wrapper gallery-modal__image-wrapper--${selectedImage.orientation}`}>
                     <img
-                      src={encodeURI(selectedImage.image)}
+                      src={selectedImage.image || selectedImage.imageUrl}
                       alt={selectedImage.eventName}
                       className="gallery-modal__image"
                       onError={(e) => {
+                        console.error('Image failed to load:', selectedImage.image || selectedImage.imageUrl);
                         e.target.src = '/venuslogo.png'; // Fallback image
                         e.target.alt = 'Image not available';
                       }}

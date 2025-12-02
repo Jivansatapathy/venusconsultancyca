@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import API from "../utils/api";
+import { getGalleryItems, addGalleryItem, updateGalleryItem, deleteGalleryItem } from "../services/galleryService";
 import "./AdminDashboard.css";
 
 const AdminDashboard = () => {
@@ -12,6 +13,7 @@ const AdminDashboard = () => {
   const [reviews, setReviews] = useState([]);
   const [bookings, setBookings] = useState([]);
   const [blogs, setBlogs] = useState([]);
+  const [galleryItems, setGalleryItems] = useState([]);
   const [seoContent, setSeoContent] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showJobModal, setShowJobModal] = useState(false);
@@ -51,6 +53,9 @@ const AdminDashboard = () => {
       } else if (activeTab === "blogs") {
         const { data } = await API.get("/blogs/admin/all");
         setBlogs(data);
+      } else if (activeTab === "gallery") {
+        const items = await getGalleryItems();
+        setGalleryItems(items);
       }
     } catch (err) {
       console.error("Error fetching data:", err);
@@ -221,6 +226,12 @@ const AdminDashboard = () => {
           >
             Blogs ({blogs.length})
           </button>
+          <button 
+            className={activeTab === "gallery" ? "active" : ""}
+            onClick={() => setActiveTab("gallery")}
+          >
+            Gallery ({galleryItems.length})
+          </button>
         </div>
 
         <div className="dashboard-content">
@@ -288,6 +299,12 @@ const AdminDashboard = () => {
               {activeTab === "blogs" && (
                 <BlogsTab 
                   blogs={blogs}
+                  onSave={fetchData}
+                />
+              )}
+              {activeTab === "gallery" && (
+                <GalleryTab 
+                  galleryItems={galleryItems}
                   onSave={fetchData}
                 />
               )}
@@ -1930,6 +1947,298 @@ const BlogsTab = ({ blogs, onSave }) => {
                 </button>
                 <button type="submit" disabled={saving}>
                   {saving ? 'Saving...' : editingBlog ? 'Update Blog' : 'Create Blog'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Gallery Management Tab Component
+const GalleryTab = ({ galleryItems, onSave }) => {
+  const [showModal, setShowModal] = useState(false);
+  const [editingItem, setEditingItem] = useState(null);
+  const [formData, setFormData] = useState({
+    eventName: '',
+    location: '',
+    description: '',
+    attendees: '',
+    orientation: 'landscape',
+    id: null
+  });
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(null);
+
+  const handleAdd = () => {
+    setEditingItem(null);
+    setFormData({
+      eventName: '',
+      location: '',
+      description: '',
+      attendees: '',
+      orientation: 'landscape',
+      id: null
+    });
+    setImageFile(null);
+    setImagePreview(null);
+    setShowModal(true);
+  };
+
+  const handleEdit = (item) => {
+    setEditingItem(item);
+    setFormData({
+      eventName: item.eventName || '',
+      location: item.location || '',
+      description: item.description || '',
+      attendees: item.attendees || '',
+      orientation: item.orientation || 'landscape',
+      id: item.id
+    });
+    setImageFile(null);
+    setImagePreview(item.imageUrl || null);
+    setShowModal(true);
+  };
+
+  const handleDelete = async (itemId, imageUrl) => {
+    if (!window.confirm('Are you sure you want to delete this gallery item?')) {
+      return;
+    }
+
+    setDeleting(itemId);
+    try {
+      await deleteGalleryItem(itemId, imageUrl);
+      if (onSave) onSave();
+    } catch (err) {
+      console.error('Error deleting gallery item:', err);
+      alert('Failed to delete gallery item');
+    } finally {
+      setDeleting(null);
+    }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setImageFile(null);
+    setImagePreview(null);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+
+    try {
+      if (editingItem) {
+        await updateGalleryItem(editingItem.id, formData, imageFile);
+      } else {
+        // Generate a new ID if not editing
+        const maxId = galleryItems.length > 0 
+          ? Math.max(...galleryItems.map(item => parseInt(item.id) || 0))
+          : 0;
+        const newId = (maxId + 1).toString();
+        await addGalleryItem({ ...formData, id: newId }, imageFile);
+      }
+
+      setShowModal(false);
+      if (onSave) onSave();
+    } catch (err) {
+      console.error('Error saving gallery item:', err);
+      alert('Failed to save gallery item: ' + (err.message || 'Unknown error'));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="tab-content">
+      <div className="tab-header">
+        <h2>Gallery Management</h2>
+        <button className="btn btn-primary" onClick={handleAdd}>
+          Add New Photo
+        </button>
+      </div>
+
+      <div className="table-container">
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Event Name</th>
+              <th>Location</th>
+              <th>Orientation</th>
+              <th>Created</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {galleryItems.length === 0 ? (
+              <tr>
+                <td colSpan="6" style={{ textAlign: 'center', padding: '2rem' }}>
+                  No gallery items yet. Click "Add New Photo" to get started.
+                </td>
+              </tr>
+            ) : (
+              galleryItems.map(item => (
+                <tr key={item.id}>
+                  <td>
+                    {item.imageUrl ? (
+                      <img 
+                        src={item.imageUrl} 
+                        alt={item.eventName}
+                        style={{ width: '80px', height: '60px', objectFit: 'cover', borderRadius: '4px' }}
+                      />
+                    ) : (
+                      <span style={{ color: '#999' }}>No image</span>
+                    )}
+                  </td>
+                  <td>{item.eventName}</td>
+                  <td>{item.location}</td>
+                  <td>
+                    <span className={`status ${item.orientation}`}>
+                      {item.orientation || 'landscape'}
+                    </span>
+                  </td>
+                  <td>
+                    {item.createdAt 
+                      ? (item.createdAt.toDate ? item.createdAt.toDate().toLocaleDateString() : new Date(item.createdAt.seconds * 1000).toLocaleDateString())
+                      : 'N/A'}
+                  </td>
+                  <td>
+                    <button 
+                      className="btn btn-sm btn-outline"
+                      onClick={() => handleEdit(item)}
+                    >
+                      Edit
+                    </button>
+                    <button 
+                      className="btn btn-sm btn-danger"
+                      onClick={() => handleDelete(item.id, item.imageUrl)}
+                      disabled={deleting === item.id}
+                    >
+                      {deleting === item.id ? 'Deleting...' : 'Delete'}
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {showModal && (
+        <div className="modal-overlay" onClick={() => setShowModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '700px' }}>
+            <div className="modal-header">
+              <h2>{editingItem ? 'Edit Gallery Item' : 'Add New Gallery Item'}</h2>
+              <button className="close-btn" onClick={() => setShowModal(false)}>×</button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="modal-form">
+              <div className="form-group">
+                <label>Event Name *</label>
+                <input
+                  type="text"
+                  value={formData.eventName}
+                  onChange={(e) => setFormData({...formData, eventName: e.target.value})}
+                  required
+                  placeholder="Event name"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Location *</label>
+                <input
+                  type="text"
+                  value={formData.location}
+                  onChange={(e) => setFormData({...formData, location: e.target.value})}
+                  required
+                  placeholder="Location (e.g., Toronto, Canada)"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Description *</label>
+                <textarea
+                  value={formData.description}
+                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  required
+                  rows={4}
+                  placeholder="Description of the event"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Attendees/Meeting Details *</label>
+                <textarea
+                  value={formData.attendees}
+                  onChange={(e) => setFormData({...formData, attendees: e.target.value})}
+                  required
+                  rows={3}
+                  placeholder="Who met with whom or event attendees"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Orientation *</label>
+                <select
+                  value={formData.orientation}
+                  onChange={(e) => setFormData({...formData, orientation: e.target.value})}
+                  required
+                >
+                  <option value="landscape">Landscape</option>
+                  <option value="portrait">Portrait</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>Photo *</label>
+                {imagePreview && (
+                  <div style={{ marginBottom: '1rem' }}>
+                    <img 
+                      src={imagePreview} 
+                      alt="Preview" 
+                      style={{ maxWidth: '100%', maxHeight: '300px', borderRadius: '4px', objectFit: 'contain' }}
+                    />
+                    <button 
+                      type="button"
+                      onClick={handleRemoveImage}
+                      className="btn btn-sm btn-danger"
+                      style={{ marginTop: '0.5rem' }}
+                    >
+                      Remove Image
+                    </button>
+                  </div>
+                )}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  required={!editingItem || !imagePreview}
+                />
+                <small>Upload a photo for the gallery</small>
+              </div>
+
+              <div className="form-actions">
+                <button type="button" onClick={() => setShowModal(false)} disabled={saving}>
+                  Cancel
+                </button>
+                <button type="submit" disabled={saving}>
+                  {saving ? 'Saving...' : editingItem ? 'Update Item' : 'Add Item'}
                 </button>
               </div>
             </form>
