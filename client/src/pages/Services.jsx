@@ -2,6 +2,7 @@
 import React, { useState, Suspense, lazy } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { jobRolesData } from "../data/jobRolesData";
+import { usePageSEO } from "../hooks/usePageSEO";
 import "./Services.css";
 import FAQ from "../components/FAQ";
 
@@ -10,6 +11,7 @@ const ServicesSection = lazy(() => import("../components/ServicesSection"));
 
 const Services = () => {
   const navigate = useNavigate();
+  const { pageSEO, getNestedValue } = usePageSEO('/services');
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [reviewForm, setReviewForm] = useState({
     name: '',
@@ -17,6 +19,10 @@ const Services = () => {
     rating: 5,
     review: ''
   });
+  
+  // Get dynamic hero content (if ServicesSection doesn't handle it)
+  const heroTitle = getNestedValue(pageSEO, 'hero.title') || '';
+  const heroSubtitle = getNestedValue(pageSEO, 'hero.subtitle') || '';
 
   // Handler functions
   const handleFindTalents = () => {
@@ -511,9 +517,9 @@ const Services = () => {
         <div className="svc-container">
           <div className="svc-hero-content">
             <span className="svc-hero-label">Talent</span>
-            <h1 className="svc-hero-title">Our services</h1>
+            <h1 className="svc-hero-title">{heroTitle || 'Our services'}</h1>
             <p className="svc-hero-description">
-              Precision recruitment solutions that transform businesses through strategic talent acquisition and expert placement.
+              {heroSubtitle || 'Precision recruitment solutions that transform businesses through strategic talent acquisition and expert placement.'}
             </p>
             <div className="svc-hero-buttons">
               <Link to="/contact" className="svc-btn-connect">

@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import API from "../utils/api";
+import { usePageSEO } from "../hooks/usePageSEO";
 import "./FindJobs.css";
 
 const FindJobs = () => {
+  const { pageSEO, getNestedValue } = usePageSEO('/find-jobs');
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState({});
@@ -14,6 +16,11 @@ const FindJobs = () => {
     tags: "",
     page: 1
   });
+  
+  // Get dynamic hero content
+  const heroTitle = getNestedValue(pageSEO, 'hero.title') || 'Find Your Next Opportunity';
+  const heroSubtitle = getNestedValue(pageSEO, 'hero.subtitle') || 'Discover exciting career opportunities that match your skills and interests';
+  const heroDescription = getNestedValue(pageSEO, 'hero.description') || '';
 
   const fetchJobs = async () => {
     try {
@@ -53,8 +60,9 @@ const FindJobs = () => {
     <div className="find-jobs-page">
       <div className="container">
         <header className="jobs-header">
-          <h1>Find Your Next Opportunity</h1>
-          <p>Discover exciting career opportunities that match your skills and interests</p>
+          <h1>{heroTitle}</h1>
+          <p>{heroSubtitle}</p>
+          {heroDescription && <p style={{ marginTop: '1rem', fontSize: '1rem' }}>{heroDescription}</p>}
         </header>
 
         <div className="jobs-content">

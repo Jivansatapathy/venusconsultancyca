@@ -3,7 +3,25 @@ import React, { useState, useMemo, useEffect } from "react";
 import "./Gallery.css";
 import { galleryData as fallbackGalleryData } from "../data/galleryData";
 import { getGalleryItems } from "../services/galleryService";
+import { usePageSEO } from "../hooks/usePageSEO";
 import API from "../utils/api";
+
+// Gallery Hero Component with Dynamic SEO
+const GalleryHero = () => {
+  const { pageSEO, getNestedValue } = usePageSEO('/gallery');
+  
+  const heroTitle = getNestedValue(pageSEO, 'hero.title') || 'Our Gallery';
+  const heroSubtitle = getNestedValue(pageSEO, 'hero.subtitle') || 'Capturing moments from our events, meetings, and networking sessions';
+
+  return (
+    <section className="gallery-hero">
+      <div className="gallery-hero__container">
+        <h1 className="gallery-hero__title">{heroTitle}</h1>
+        <p className="gallery-hero__subtitle">{heroSubtitle}</p>
+      </div>
+    </section>
+  );
+};
 
 const Gallery = () => {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -174,14 +192,7 @@ const Gallery = () => {
   return (
     <main className="gallery-page">
       {/* Hero Section */}
-      <section className="gallery-hero">
-        <div className="gallery-hero__container">
-          <h1 className="gallery-hero__title">Our Gallery</h1>
-          <p className="gallery-hero__subtitle">
-            Capturing moments from our events, meetings, and networking sessions
-          </p>
-        </div>
-      </section>
+      <GalleryHero />
 
       {/* Gallery Grid */}
       <section className="gallery-section">

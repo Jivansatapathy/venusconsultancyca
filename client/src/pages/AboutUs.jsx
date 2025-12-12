@@ -3,9 +3,19 @@ import React from "react";
 import { Link } from 'react-router-dom';
 import TransformSection from "../components/TransformSection";
 import FAQ from "../components/FAQ";
+import { usePageSEO } from "../hooks/usePageSEO";
 import "./AboutUs.css";
 
 const AboutUs = () => {
+  const { pageSEO, getNestedValue } = usePageSEO('/about');
+
+  // Default values
+  const heroTag = getNestedValue(pageSEO, 'hero.tag') || 'ABOUT US';
+  const heroTitle = getNestedValue(pageSEO, 'hero.title') || 'The most loved';
+  const heroTitleHighlight = getNestedValue(pageSEO, 'hero.titleHighlight') || 'Agency';
+  const heroDescription = getNestedValue(pageSEO, 'hero.description') || 'We connect ambitious teams across Canada and beyond with the right talent to build the future—faster and with confidence. Our mission drives everything we do.';
+  const heroImage = getNestedValue(pageSEO, 'hero.image') || '/aboutus/Venusca.png';
+
   return (
     <main className="about-page">
       {/* Hero Section - About Us Design with Image Trail */}
@@ -16,7 +26,7 @@ const AboutUs = () => {
             <div className="about-hero-left">
               <div className="about-hero-image-wrapper">
                 <img 
-                  src="/aboutus/Venusca.png" 
+                  src={heroImage}
                   alt="About us" 
                   className="about-hero-image"
                 />
@@ -24,12 +34,12 @@ const AboutUs = () => {
             </div>
             {/* Right Side - Text and Features */}
             <div className="about-hero-right">
-              <span className="about-hero-tag">ABOUT US</span>
+              <span className="about-hero-tag">{heroTag}</span>
               <h1 className="about-hero-title">
-                The most loved <span className="about-hero-title-highlight">Agency</span>
+                {heroTitle} <span className="about-hero-title-highlight">{heroTitleHighlight}</span>
               </h1>
-                  <p className="about-hero-description">
-                We connect ambitious teams across Canada and beyond with the right talent to build the future—faster and with confidence. Our mission drives everything we do.
+              <p className="about-hero-description">
+                {heroDescription}
               </p>
               
               {/* Feature Cards Grid */}

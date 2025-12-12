@@ -1,12 +1,18 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { getAllIndustries, getJobRolesByIndustry } from "../data/jobRolesData";
+import { usePageSEO } from "../hooks/usePageSEO";
 import "./JobRoles.css";
 
 const JobRoles = () => {
+  const { pageSEO, getNestedValue } = usePageSEO('/job-roles');
   const [selectedIndustry, setSelectedIndustry] = useState("All");
   const industries = getAllIndustries();
   const allIndustries = ["All", ...industries];
+  
+  const heroTitle = getNestedValue(pageSEO, 'hero.title') || 'Job Roles';
+  const heroSubtitle = getNestedValue(pageSEO, 'hero.subtitle') || 'Explore career opportunities across all industries';
+  const heroDescription = getNestedValue(pageSEO, 'hero.description') || '';
 
   const formatSalary = (amount) => {
     return new Intl.NumberFormat('en-US', {
@@ -32,8 +38,9 @@ const JobRoles = () => {
       {/* Header */}
       <div className="job-roles-header">
         <div className="job-roles-container">
-          <h1>Job Roles</h1>
-          <p>Explore career opportunities across all industries</p>
+          <h1>{heroTitle}</h1>
+          <p>{heroSubtitle}</p>
+          {heroDescription && <p style={{ marginTop: '1rem', fontSize: '1rem' }}>{heroDescription}</p>}
         </div>
       </div>
 

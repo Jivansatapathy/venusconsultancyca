@@ -1,16 +1,103 @@
 // client/src/pages/IndustryPage.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { getIndustryBySlug } from "../data/industryData";
+import { useSEOContent } from "../context/SEOContentContext";
+import API from "../utils/api";
 import "./IndustryPage.css";
 
 const IndustryPage = () => {
   const { industrySlug } = useParams();
   const navigate = useNavigate();
-  const industry = getIndustryBySlug(industrySlug);
+  const { content: seoContextContent } = useSEOContent();
+  const baseIndustry = getIndustryBySlug(industrySlug);
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
+  const [pageSEO, setPageSEO] = useState(null);
+  const [loadingSEO, setLoadingSEO] = useState(true);
 
-  if (!industry) {
+  // Load page-specific SEO content - ALWAYS fetch fresh from database
+  // This ensures changes persist across reloads and work in production
+  useEffect(() => {
+    const loadPageSEO = async () => {
+      if (!baseIndustry) return;
+      
+      setLoadingSEO(true);
+      const pagePath = `/industry/${industrySlug}`;
+      try {
+        // Always fetch fresh data from Firebase database
+        // This ensures changes made in admin panel are immediately visible
+        const encodedPath = encodeURIComponent(pagePath);
+        const { data } = await API.get(`/seo/page/${encodedPath}`);
+        
+        // Check if we got actual page-specific content (not just fallback to main)
+        // Page-specific content will have pagePath property
+        if (data && data.pagePath === pagePath && Object.keys(data).length > 1) {
+          setPageSEO(data);
+        } else {
+          // No page-specific content, use defaults
+          setPageSEO(null);
+        }
+      } catch (err) {
+        // If no page-specific content exists, that's fine - use defaults
+        setPageSEO(null);
+      } finally {
+        setLoadingSEO(false);
+      }
+    };
+
+    // Always reload when slug changes or component mounts
+    loadPageSEO();
+  }, [industrySlug, baseIndustry]);
+
+  // Merge SEO content with default industry data
+  const getNestedValue = (obj, path) => {
+    if (!path) return undefined;
+    return path.split('.').reduce((current, key) => current?.[key], obj);
+  };
+
+  const industry = baseIndustry ? {
+    ...baseIndustry,
+    hero: {
+      ...baseIndustry.hero,
+      title: getNestedValue(pageSEO, 'hero.title') || baseIndustry.hero.title,
+      subtitle: getNestedValue(pageSEO, 'hero.subtitle') || baseIndustry.hero.subtitle,
+      description: getNestedValue(pageSEO, 'hero.description') || baseIndustry.hero.description,
+      backgroundImage: getNestedValue(pageSEO, 'hero.backgroundImage') || baseIndustry.hero.backgroundImage,
+    },
+    whoAreWe: {
+      ...baseIndustry.whoAreWe,
+      title: getNestedValue(pageSEO, 'whoAreWe.title') || baseIndustry.whoAreWe.title,
+      description: getNestedValue(pageSEO, 'whoAreWe.description') || baseIndustry.whoAreWe.description,
+      image1: getNestedValue(pageSEO, 'whoAreWe.image1') || baseIndustry.whoAreWe.image1,
+      image2: getNestedValue(pageSEO, 'whoAreWe.image2') || baseIndustry.whoAreWe.image2,
+    },
+    whyYouNeedUs: {
+      ...baseIndustry.whyYouNeedUs,
+      title: getNestedValue(pageSEO, 'whyYouNeedUs.title') || baseIndustry.whyYouNeedUs.title,
+      description: getNestedValue(pageSEO, 'whyYouNeedUs.description') || baseIndustry.whyYouNeedUs.description,
+      image1: getNestedValue(pageSEO, 'whyYouNeedUs.image1') || baseIndustry.whyYouNeedUs.image1,
+      benefits: getNestedValue(pageSEO, 'whyYouNeedUs.benefits') || baseIndustry.whyYouNeedUs.benefits,
+    },
+    whatWeCanDo: {
+      ...baseIndustry.whatWeCanDo,
+      title: getNestedValue(pageSEO, 'whatWeCanDo.title') || baseIndustry.whatWeCanDo.title,
+      description: getNestedValue(pageSEO, 'whatWeCanDo.description') || baseIndustry.whatWeCanDo.description,
+      image1: getNestedValue(pageSEO, 'whatWeCanDo.image1') || baseIndustry.whatWeCanDo.image1,
+      image2: getNestedValue(pageSEO, 'whatWeCanDo.image2') || baseIndustry.whatWeCanDo.image2,
+      image3: getNestedValue(pageSEO, 'whatWeCanDo.image3') || baseIndustry.whatWeCanDo.image3,
+      icon1: getNestedValue(pageSEO, 'whatWeCanDo.icon1') || baseIndustry.whatWeCanDo.icon1,
+      icon2: getNestedValue(pageSEO, 'whatWeCanDo.icon2') || baseIndustry.whatWeCanDo.icon2,
+      services: getNestedValue(pageSEO, 'whatWeCanDo.services') || baseIndustry.whatWeCanDo.services,
+    },
+    stats: {
+      ...baseIndustry.stats,
+      title: getNestedValue(pageSEO, 'stats.title') || baseIndustry.stats.title,
+      items: getNestedValue(pageSEO, 'stats.items') || baseIndustry.stats.items,
+    },
+    faq: getNestedValue(pageSEO, 'faq') || baseIndustry.faq,
+  } : null;
+
+  if (!baseIndustry || !industry) {
     return (
       <div className="industry-not-found">
         <h1>Industry Not Found</h1>

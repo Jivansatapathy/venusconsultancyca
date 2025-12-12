@@ -8,24 +8,54 @@ export function SEOContentProvider({ children }) {
   const [content, setContent] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchSEOContent = async () => {
+  const fetchSEOContent = async () => {
+    try {
+      const { data } = await API.get('/seo');
+      
+      // Also fetch all page-specific SEO entries (only if user is admin)
+      // For public users, pages will fetch individually
       try {
-        const { data } = await API.get('/seo');
+        const { data: pagesData } = await API.get('/seo/pages');
+        
+        // Organize pages by path
+        const pagesMap = {};
+        if (Array.isArray(pagesData)) {
+          pagesData.forEach(page => {
+            if (page.pagePath) {
+              pagesMap[page.pagePath] = page;
+            }
+          });
+        }
+        
+        setContent({
+          ...data,
+          pages: pagesMap
+        });
+      } catch (pagesErr) {
+        // If pages endpoint fails (e.g., not admin), just use main content
+        // Individual pages will fetch their own SEO content
         setContent(data);
-      } catch (err) {
-        console.error('Error fetching SEO content:', err);
-        setContent(null);
-      } finally {
-        setLoading(false);
       }
-    };
+    } catch (err) {
+      console.error('Error fetching SEO content:', err);
+      setContent(null);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchSEOContent();
   }, []);
 
+  // Refresh function to reload content (useful after admin updates)
+  const refresh = () => {
+    setLoading(true);
+    fetchSEOContent();
+  };
+
   return (
-    <SEOContentContext.Provider value={{ content, loading }}>
+    <SEOContentContext.Provider value={{ content, loading, refresh }}>
       {children}
     </SEOContentContext.Provider>
   );

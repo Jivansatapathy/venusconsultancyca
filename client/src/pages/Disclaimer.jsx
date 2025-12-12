@@ -1,26 +1,44 @@
 // client/src/pages/Disclaimer.jsx
 import React from "react";
+import { usePageSEO } from "../hooks/usePageSEO";
 import "./Disclaimer.css";
 
 const Disclaimer = () => {
+  const { pageSEO, getNestedValue } = usePageSEO('/disclaimer');
+  
+  const pageTitle = getNestedValue(pageSEO, 'header.title') || 'Disclaimer';
+  const lastUpdated = getNestedValue(pageSEO, 'header.lastUpdated') || new Date().toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' });
+  const contentSections = getNestedValue(pageSEO, 'content.sections') || [];
+
+  // Default content if no SEO content
+  const defaultSections = [
+    {
+      title: '1. General Information',
+      content: 'The information contained on the Venus Hiring website and in our services is provided on an "as is" basis. While we strive to provide accurate and up-to-date information, we make no representations or warranties of any kind, express or implied, about the completeness, accuracy, reliability, suitability, or availability of the information, products, services, or related graphics contained on our website.\n\nAny reliance you place on such information is strictly at your own risk. We will not be liable for any loss or damage, including without limitation, indirect or consequential loss or damage, arising from the use of or reliance on any information provided through our services.'
+    }
+  ];
+
+  const sections = contentSections.length > 0 ? contentSections : defaultSections;
+
   return (
     <main className="legal-page">
       <div className="legal-container">
         <div className="legal-header">
-          <h1 className="legal-title">Disclaimer</h1>
-          <p className="legal-last-updated">Last Updated: {new Date().toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+          <h1 className="legal-title">{pageTitle}</h1>
+          <p className="legal-last-updated">Last Updated: {lastUpdated}</p>
         </div>
 
         <div className="legal-content">
-          <section className="legal-section">
-            <h2 className="legal-section-title">1. General Information</h2>
-            <p>
-              The information contained on the Venus Hiring website and in our services is provided on an "as is" basis. While we strive to provide accurate and up-to-date information, we make no representations or warranties of any kind, express or implied, about the completeness, accuracy, reliability, suitability, or availability of the information, products, services, or related graphics contained on our website.
-            </p>
-            <p>
-              Any reliance you place on such information is strictly at your own risk. We will not be liable for any loss or damage, including without limitation, indirect or consequential loss or damage, arising from the use of or reliance on any information provided through our services.
-            </p>
-          </section>
+          {sections.map((section, index) => (
+            <section key={index} className="legal-section">
+              <h2 className="legal-section-title">{section.title}</h2>
+              {section.content.split('\n').map((paragraph, pIndex) => (
+                paragraph.trim() && (
+                  <p key={pIndex}>{paragraph}</p>
+                )
+              ))}
+            </section>
+          ))}
 
           <section className="legal-section">
             <h2 className="legal-section-title">2. No Employment Guarantee</h2>

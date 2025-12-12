@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import API from "../utils/api";
 import { getGalleryItems, addGalleryItem, updateGalleryItem, deleteGalleryItem } from "../services/galleryService";
+import DynamicSEOTab from "../components/DynamicSEOTab";
 import "./AdminDashboard.css";
 
 const AdminDashboard = () => {
@@ -291,10 +292,15 @@ const AdminDashboard = () => {
                 />
               )}
               {activeTab === "seo" && (
-                <SEOTab 
-                  seoContent={seoContent}
-                  onSave={fetchData}
-                />
+                <>
+                  <SEOTab 
+                    seoContent={seoContent}
+                    onSave={fetchData}
+                  />
+                  <DynamicSEOTab 
+                    onSave={fetchData}
+                  />
+                </>
               )}
               {activeTab === "blogs" && (
                 <BlogsTab 

@@ -121,15 +121,19 @@ const upsertPageSEO = async (pagePath, seoData) => {
     };
     
     if (doc.exists) {
+      // Update existing document in Firebase
       await docRef.update(seoContent);
+      console.log(`✅ Updated SEO content in Firebase: Collection="${COLLECTION_NAME}", Document="${docId}"`);
     } else {
+      // Create new document in Firebase
       seoContent.createdAt = new Date();
       await docRef.set(seoContent);
+      console.log(`✅ Created new SEO content in Firebase: Collection="${COLLECTION_NAME}", Document="${docId}"`);
     }
     
     return { id: docId, ...seoContent };
   } catch (error) {
-    console.error("Error upserting page SEO:", error);
+    console.error("❌ Error upserting page SEO to Firebase:", error);
     throw error;
   }
 };

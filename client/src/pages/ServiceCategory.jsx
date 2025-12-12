@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
+import { usePageSEO } from "../hooks/usePageSEO";
 import "./ServiceCategory.css";
 
 const ServiceCategory = () => {
   const { categoryKey } = useParams();
   const navigate = useNavigate();
+  const pagePath = `/service-category/${categoryKey}`;
+  const { pageSEO, getNestedValue } = usePageSEO(pagePath);
   const [showApplyModal, setShowApplyModal] = useState(false);
   const [selectedJob, setSelectedJob] = useState(null);
 
@@ -327,9 +330,9 @@ const ServiceCategory = () => {
     }
   };
 
-  const currentCategory = serviceCategories[categoryKey];
+  const baseCategory = serviceCategories[categoryKey];
 
-  if (!currentCategory) {
+  if (!baseCategory) {
     return (
       <div className="service-category-not-found">
         <h1>Service Category Not Found</h1>
@@ -338,6 +341,15 @@ const ServiceCategory = () => {
       </div>
     );
   }
+
+  // Merge SEO content with default category data
+  const currentCategory = {
+    ...baseCategory,
+    title: getNestedValue(pageSEO, 'hero.title') || baseCategory.title,
+    description: getNestedValue(pageSEO, 'hero.description') || getNestedValue(pageSEO, 'hero.subtitle') || baseCategory.description,
+    // Allow SEO to override features/benefits if provided
+    benefits: getNestedValue(pageSEO, 'content.features') || baseCategory.benefits,
+  };
 
   const handleJobClick = (jobTitle) => {
     setSelectedJob(jobTitle);

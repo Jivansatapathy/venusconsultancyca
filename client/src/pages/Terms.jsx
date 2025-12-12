@@ -1,26 +1,44 @@
 // client/src/pages/Terms.jsx
 import React from "react";
+import { usePageSEO } from "../hooks/usePageSEO";
 import "./Terms.css";
 
 const Terms = () => {
+  const { pageSEO, getNestedValue } = usePageSEO('/terms');
+  
+  const pageTitle = getNestedValue(pageSEO, 'header.title') || 'Terms of Service';
+  const lastUpdated = getNestedValue(pageSEO, 'header.lastUpdated') || new Date().toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' });
+  const contentSections = getNestedValue(pageSEO, 'content.sections') || [];
+
+  // Default content if no SEO content
+  const defaultSections = [
+    {
+      title: '1. Acceptance of Terms',
+      content: 'By accessing and using the services provided by Venus Hiring ("we," "our," or "us"), you accept and agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, you must not use our services.\n\nThese Terms constitute a legally binding agreement between you and Venus Hiring. We reserve the right to modify these Terms at any time, and such modifications will be effective immediately upon posting on our website.'
+    }
+  ];
+
+  const sections = contentSections.length > 0 ? contentSections : defaultSections;
+
   return (
     <main className="legal-page">
       <div className="legal-container">
         <div className="legal-header">
-          <h1 className="legal-title">Terms of Service</h1>
-          <p className="legal-last-updated">Last Updated: {new Date().toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+          <h1 className="legal-title">{pageTitle}</h1>
+          <p className="legal-last-updated">Last Updated: {lastUpdated}</p>
         </div>
 
         <div className="legal-content">
-          <section className="legal-section">
-            <h2 className="legal-section-title">1. Acceptance of Terms</h2>
-            <p>
-              By accessing and using the services provided by Venus Hiring ("we," "our," or "us"), you accept and agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, you must not use our services.
-            </p>
-            <p>
-              These Terms constitute a legally binding agreement between you and Venus Hiring. We reserve the right to modify these Terms at any time, and such modifications will be effective immediately upon posting on our website.
-            </p>
-          </section>
+          {sections.map((section, index) => (
+            <section key={index} className="legal-section">
+              <h2 className="legal-section-title">{section.title}</h2>
+              {section.content.split('\n').map((paragraph, pIndex) => (
+                paragraph.trim() && (
+                  <p key={pIndex}>{paragraph}</p>
+                )
+              ))}
+            </section>
+          ))}
 
           <section className="legal-section">
             <h2 className="legal-section-title">2. Description of Services</h2>

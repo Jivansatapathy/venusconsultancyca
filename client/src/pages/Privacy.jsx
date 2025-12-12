@@ -1,26 +1,45 @@
 // client/src/pages/Privacy.jsx
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { usePageSEO } from "../hooks/usePageSEO";
+import API from "../utils/api";
 import "./Privacy.css";
 
 const Privacy = () => {
+  const { pageSEO, getNestedValue } = usePageSEO('/privacy');
+  
+  const pageTitle = getNestedValue(pageSEO, 'header.title') || 'Privacy Policy';
+  const lastUpdated = getNestedValue(pageSEO, 'header.lastUpdated') || new Date().toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' });
+  const contentSections = getNestedValue(pageSEO, 'content.sections') || [];
+
+  // Default content if no SEO content
+  const defaultSections = [
+    {
+      title: '1. Introduction',
+      content: 'Venus Hiring ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website, use our services, or interact with us. This policy complies with the Personal Information Protection and Electronic Documents Act (PIPEDA) and other applicable Canadian privacy laws.\n\nBy using our services, you consent to the collection and use of information in accordance with this policy. If you do not agree with our policies and practices, please do not use our services.'
+    }
+  ];
+
+  const sections = contentSections.length > 0 ? contentSections : defaultSections;
+
   return (
     <main className="legal-page">
       <div className="legal-container">
         <div className="legal-header">
-          <h1 className="legal-title">Privacy Policy</h1>
-          <p className="legal-last-updated">Last Updated: {new Date().toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+          <h1 className="legal-title">{pageTitle}</h1>
+          <p className="legal-last-updated">Last Updated: {lastUpdated}</p>
         </div>
 
         <div className="legal-content">
-          <section className="legal-section">
-            <h2 className="legal-section-title">1. Introduction</h2>
-            <p>
-              Venus Hiring ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website, use our services, or interact with us. This policy complies with the Personal Information Protection and Electronic Documents Act (PIPEDA) and other applicable Canadian privacy laws.
-            </p>
-            <p>
-              By using our services, you consent to the collection and use of information in accordance with this policy. If you do not agree with our policies and practices, please do not use our services.
-            </p>
-          </section>
+          {sections.map((section, index) => (
+            <section key={index} className="legal-section">
+              <h2 className="legal-section-title">{section.title}</h2>
+              {section.content.split('\n').map((paragraph, pIndex) => (
+                paragraph.trim() && (
+                  <p key={pIndex}>{paragraph}</p>
+                )
+              ))}
+            </section>
+          ))}
 
           <section className="legal-section">
             <h2 className="legal-section-title">2. Information We Collect</h2>

@@ -1,11 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { getJobRoleByKey, getAllIndustries, getJobRolesByIndustry, jobRolesData } from "../data/jobRolesData";
+import { usePageSEO } from "../hooks/usePageSEO";
+import API from "../utils/api";
 import "./Hiring.css";
 
 const Hiring = () => {
   const { jobRole } = useParams();
   const navigate = useNavigate();
+  const pagePath = jobRole ? `/hiring/${jobRole}` : '/hiring';
+  const { pageSEO, getNestedValue } = usePageSEO(pagePath);
   
   const jobData = getJobRoleByKey(jobRole) || {
     title: "Product Support Specialist",
@@ -72,15 +76,15 @@ const Hiring = () => {
           <div className="hiring-layout">
             {/* Left Column - Job Details */}
             <div className="hiring-content">
-              <h1 className="job-title">{jobData.title}</h1>
+              <h1 className="job-title">{getNestedValue(pageSEO, 'hero.title') || jobData.title}</h1>
               
               <div className="job-description">
                 <h2>{jobData.title} Job Description</h2>
-                <p>{jobData.description}</p>
+                <p>{getNestedValue(pageSEO, 'description.overview') || jobData.description}</p>
                 
                 <h3>Typical {jobData.title.toLowerCase()} duties:</h3>
                 <ul className="duties-list">
-                  {jobData.duties.map((duty, index) => (
+                  {(getNestedValue(pageSEO, 'description.duties') || jobData.duties).map((duty, index) => (
                     <li key={index}>{duty}</li>
                   ))}
                 </ul>

@@ -2,10 +2,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../utils/api";
+import { usePageSEO } from "../hooks/usePageSEO";
 import "./BookCall.css";
 
 const BookCall = () => {
   const navigate = useNavigate();
+  const { pageSEO, getNestedValue } = usePageSEO('/book-call');
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -90,8 +92,11 @@ const BookCall = () => {
     <div className="book-call-page">
       <div className="book-call-container">
         <div className="book-call-header">
-          <h1>Book A Call</h1>
-          <p>Schedule a consultation with our team to discuss your hiring needs</p>
+          <h1>{getNestedValue(pageSEO, 'hero.title') || 'Book A Call'}</h1>
+          <p>{getNestedValue(pageSEO, 'hero.subtitle') || 'Schedule a consultation with our team to discuss your hiring needs'}</p>
+          {getNestedValue(pageSEO, 'hero.description') && (
+            <p style={{ marginTop: '1rem', fontSize: '1rem' }}>{getNestedValue(pageSEO, 'hero.description')}</p>
+          )}
         </div>
 
         <form className="book-call-form" onSubmit={handleSubmit}>

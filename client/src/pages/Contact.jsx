@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import "./Contact.css";
 import API from "../utils/api";
+import { usePageSEO } from "../hooks/usePageSEO";
 
 const offices = [
   {
@@ -28,6 +29,7 @@ const offices = [
 ];
 
 const Contact = () => {
+  const { pageSEO, getNestedValue } = usePageSEO('/contact');
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -36,6 +38,10 @@ const Contact = () => {
   });
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState(null);
+  
+  // Get dynamic hero content
+  const heroTitle = getNestedValue(pageSEO, 'hero.title') || 'Contact Us';
+  const heroSubtitle = getNestedValue(pageSEO, 'hero.subtitle') || 'Get in touch with our team';
 
   // Ensure proper CSS loading when component mounts
   useEffect(() => {
@@ -100,6 +106,14 @@ const Contact = () => {
 
   return (
     <main className="contact-page">
+      {/* Hero Section */}
+      <section className="contact-hero" style={{ padding: '3rem 2rem', textAlign: 'center', background: '#f8f9fa' }}>
+        <div className="container">
+          <h1 style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>{heroTitle}</h1>
+          <p style={{ fontSize: '1.2rem', color: '#666' }}>{heroSubtitle}</p>
+        </div>
+      </section>
+      
       {/* CONTACT CARD */}
       <section className="contact-card container">
         <div className="contact-inner">

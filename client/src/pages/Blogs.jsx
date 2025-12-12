@@ -2,12 +2,20 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import API from "../utils/api";
+import { usePageSEO } from "../hooks/usePageSEO";
 import "./Blogs.css";
 
 const Blogs = () => {
+  const { pageSEO, getNestedValue } = usePageSEO('/blogs');
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  const heroTitle = getNestedValue(pageSEO, 'hero.title') || 'Insights & Articles';
+  const heroSubtitle = getNestedValue(pageSEO, 'hero.subtitle') || 'Latest thinking on hiring, talent strategy and interview best practices from the Venus Hiring team.';
+  const heroDescription = getNestedValue(pageSEO, 'hero.description') || '';
+  const emptyTitle = getNestedValue(pageSEO, 'empty.title') || 'No blog posts available at the moment.';
+  const emptyMessage = getNestedValue(pageSEO, 'empty.message') || '';
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -55,15 +63,15 @@ const Blogs = () => {
     <div className="blogs-page">
       <div className="blogs-container">
         <header className="blogs-header">
-          <h1>Insights & Articles</h1>
-          <p className="blogs-subtitle">
-            Latest thinking on hiring, talent strategy and interview best practices from the Venus Hiring team.
-          </p>
+          <h1>{heroTitle}</h1>
+          <p className="blogs-subtitle">{heroSubtitle}</p>
+          {heroDescription && <p style={{ marginTop: '1rem', fontSize: '1rem' }}>{heroDescription}</p>}
         </header>
 
         {blogs.length === 0 ? (
           <div className="blogs-empty">
-            <p>No blog posts available at the moment.</p>
+            <p>{emptyTitle}</p>
+            {emptyMessage && <p style={{ marginTop: '0.5rem' }}>{emptyMessage}</p>}
             <Link to="/" className="btn btn-primary">Go Home</Link>
           </div>
         ) : (

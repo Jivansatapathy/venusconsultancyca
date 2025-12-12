@@ -172,8 +172,8 @@ const Navbar = () => {
             );
           })}
           
-          {/* Industries Dropdown - Hidden for now */}
-          {/* <div 
+          {/* Industries Dropdown */}
+          <div 
             className="vh-navlink-wrapper"
             onMouseEnter={() => setIndustriesDropdownOpen(true)}
             onMouseLeave={(e) => {
@@ -225,7 +225,7 @@ const Navbar = () => {
                 </Link>
               </div>
             )}
-          </div> */}
+          </div>
           
           {/* Dashboard link for authenticated users */}
           {isAuthenticated && user && AUTH_LINKS.map((link) => {
@@ -302,8 +302,8 @@ const Navbar = () => {
             );
           })}
           
-          {/* Industries Section in Mobile Menu - Hidden for now */}
-          {/* <div className="vh-mobile-menu__section">
+          {/* Industries Section in Mobile Menu */}
+          <div className="vh-mobile-menu__section">
             <div className="vh-mobile-menu__section-title">Industries</div>
             {industries.map((industry) => {
               const isActive = location.pathname === `/industry/${industry.slug}`;
@@ -327,7 +327,7 @@ const Navbar = () => {
             >
               View All Services →
             </Link>
-          </div> */}
+          </div>
           
           {/* Dashboard link for authenticated users in mobile menu */}
           {isAuthenticated && user && AUTH_LINKS.map((link) => {
