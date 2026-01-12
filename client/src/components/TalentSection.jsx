@@ -77,9 +77,8 @@ const TalentSection = ({ brandColor = config.brandColor }) => {
                 aria-controls={`vh-tabpanel-${cat.key}`}
                 id={`vh-tab-${cat.key}`}
                 tabIndex={cat.key === activeKey ? 0 : -1}
-                className={`vh-talent__tab ${
-                  cat.key === activeKey ? "active" : ""
-                }`}
+                className={`vh-talent__tab ${cat.key === activeKey ? "active" : ""
+                  }`}
                 onClick={() => setActiveKey(cat.key)}
                 style={
                   cat.key === activeKey
@@ -142,7 +141,34 @@ const TalentSection = ({ brandColor = config.brandColor }) => {
               ))}
             </ul>
 
-            {/* removed learn more link per request */}
+            {/* Know More Button */}
+            {active.learnMoreUrl && (
+              <a
+                href={active.learnMoreUrl}
+                className="vh-talent__learn-more"
+                onClick={(e) => {
+                  e.preventDefault();
+                  // Using window.location for hard refresh or import useNavigate if strictly SPA refactor
+                  // But since config is passed, we can stick to anchor or use parent navigator.
+                  // For now, let's use a simple anchor that behaves like a link
+                  window.location.href = active.learnMoreUrl;
+                }}
+                style={{
+                  display: "inline-block",
+                  marginTop: "20px",
+                  padding: "10px 24px",
+                  backgroundColor: brandColor,
+                  color: "#fff",
+                  textDecoration: "none",
+                  borderRadius: "4px",
+                  fontWeight: "600",
+                  fontSize: "14px",
+                  transition: "background-color 0.2s ease"
+                }}
+              >
+                Know More
+              </a>
+            )}
           </div>
 
           {/* Right collage */}
